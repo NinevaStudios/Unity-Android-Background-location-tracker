@@ -6,5 +6,5 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
-    path: Assets/GoogleMapsView/Example/MapView/ExampleScene.unity
-    guid: 00000000000000000000000000000000
+    path: Assets/LocationTracking/Examples/ExampleScene.unity
+    guid: 88054a351f7714900be3940fd1c6f670

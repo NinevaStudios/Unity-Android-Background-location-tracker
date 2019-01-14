@@ -145,7 +145,7 @@ PlayerSettings:
   targetPixelDensity: 30
   resolutionScalingMode: 0
   applicationIdentifier:
-    Android: gmaps.deadmosquitogames.com.googlemaps
+    Android: com.ninevastudios.locationtracker
     Standalone: unity.Dead Mosquito Games.Google Maps Demo
     Tizen: gmaps.deadmosquitogames.com.googlemaps
     iOS: gmaps.deadmosquitogames.com.googlemaps

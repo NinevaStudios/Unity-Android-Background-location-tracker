@@ -7,6 +7,7 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
@@ -31,6 +32,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 @Keep
 public class NinevaLocationService extends Service {
 
+	IBinder binder = new LocalBinder();
+
 	private static final String TAG = NinevaLocationService.class.getSimpleName();
 	private static final int REQUEST_CHECK_SETTINGS = 666;
 
@@ -46,7 +49,7 @@ public class NinevaLocationService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		return null;
+		return binder;
 	}
 
 	@Override
@@ -70,6 +73,8 @@ public class NinevaLocationService extends Service {
 			public void onLocationResult(LocationResult locationResult) {
 				super.onLocationResult(locationResult);
 
+				// TODO push location to unity
+				// TODO save location to sqlite db
 				Log.d(TAG, "Location Received " + locationResult);
 			}
 		};
@@ -96,27 +101,32 @@ public class NinevaLocationService extends Service {
 					@Override
 					public void onFailure(@NonNull Exception e) {
 						if (e instanceof ResolvableApiException) {
-							// Location settings are not satisfied, but this can be fixed
-							// by showing the user a dialog.
+
+							// TODO unity
 //							try {
-//								// TODO create another intermedisate activity ???
-//								// Show the dialog by calling startResolutionForResult(),
-//								// and check the result in onActivityResult().
-//														ResolvableApiException resolvable = (ResolvableApiException) e;
-//														resolvable.startResolutionForResult(this, REQUEST_CHECK_SETTINGS);
+//								ResolvableApiException resolvable = (ResolvableApiException) e;
+//								resolvable.startResolutionForResult(this, REQUEST_CHECK_SETTINGS);
 //							} catch (IntentSender.SendIntentException sendEx) {
-//								// Ignore the error.
+//								UnityCallbacks.onCheckLocationSettingsFailed();
 //							}
 						} else {
-							// TODO onFailure
+							UnityCallbacks.onCheckLocationSettingsFailed();
 						}
 					}
-				}).addOnCanceledListener(new OnCanceledListener() {
-			@Override
-			public void onCanceled() {
-				Log.d(TAG, "checkLocationSettings -> onCanceled");
-			}
-		});
+				})
+				.addOnCanceledListener(new OnCanceledListener() {
+					@Override
+					public void onCanceled() {
+						Log.d(TAG, "checkLocationSettings -> onCanceled");
+					}
+				});
+	}
+
+	private void startResolutionActivity(@NonNull ResolvableApiException e) {
+		Intent intent = new Intent(NinevaLocationService.this, LocationHelperActivity.class);
+		intent.putExtra(LocationHelperActivity.EXTRA_EXCEPTION, e);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+		startActivity(intent);
 	}
 
 	@SuppressLint("MissingPermission")
@@ -138,10 +148,6 @@ public class NinevaLocationService extends Service {
 	}
 
 	private void createForegroundNotification() {
-//		Intent intent = new Intent(this, MainActivity.class);
-//		intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//		PendingIntent pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT);
-
 		String CHANNEL_ID = "channel_location";
 		String CHANNEL_NAME = "channel_location";
 
@@ -166,5 +172,15 @@ public class NinevaLocationService extends Service {
 //		builder.setContentIntent(pendingIntent);
 		Notification notification = builder.build();
 		startForeground(101, notification);
+	}
+
+	public void onResolutionResult() {
+		Log.d(TAG, "onResolutionResult");
+	}
+
+	public class LocalBinder extends Binder {
+		public NinevaLocationService getServerInstance() {
+			return NinevaLocationService.this;
+		}
 	}
 }
