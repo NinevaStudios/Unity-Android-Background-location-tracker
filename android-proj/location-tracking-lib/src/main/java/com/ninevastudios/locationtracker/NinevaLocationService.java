@@ -1,13 +1,12 @@
 package com.ninevastudios.locationtracker;
 
+import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentSender;
-import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
@@ -35,13 +34,10 @@ public class NinevaLocationService extends Service {
 	private static final String TAG = NinevaLocationService.class.getSimpleName();
 	private static final int REQUEST_CHECK_SETTINGS = 666;
 
-	/* For Google Fused API */
 	protected LocationSettingsRequest locationSettingsRequest;
-	private FusedLocationProviderClient mFusedLocationClient;
-	private SettingsClient mSettingsClient;
+	private FusedLocationProviderClient fusedLocationClient;
 	private LocationCallback locationCallback;
 	private LocationRequest locationRequest;
-	private Location mCurrentLocation;
 
 	@Override
 	public void onCreate() {
@@ -66,8 +62,8 @@ public class NinevaLocationService extends Service {
 	}
 
 	private void init() {
-		mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-		mSettingsClient = LocationServices.getSettingsClient(this);
+		fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+		SettingsClient mSettingsClient = LocationServices.getSettingsClient(this);
 
 		locationCallback = new LocationCallback() {
 			@Override
@@ -123,16 +119,20 @@ public class NinevaLocationService extends Service {
 		});
 	}
 
+	@SuppressLint("MissingPermission")
 	private void requestLocationUpdates() {
-		// TODO permissions
-		mFusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+		if (RequestPermissionActivity.hasLocationPermission(this)) {
+			fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+		} else {
+			Log.e(TAG, "You must request location permissions before requesting location updates");
+		}
 	}
 
 	@Override
 	public void onDestroy() {
 		super.onDestroy();
-		if (mFusedLocationClient != null) {
-			mFusedLocationClient.removeLocationUpdates(locationCallback);
+		if (fusedLocationClient != null) {
+			fusedLocationClient.removeLocationUpdates(locationCallback);
 			Log.d(TAG, "Location Update Callback Removed");
 		}
 	}
