@@ -21,6 +21,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 public class LocationHelperActivity extends Activity {
+	private static final String TAG = LocationHelperActivity.class.getSimpleName();
+	
 	private static final int REQUEST_CHECK_SETTINGS = 666;
 	public static final String EXTRA_EXCEPTION = "exception";
 
@@ -33,7 +35,7 @@ public class LocationHelperActivity extends Activity {
 		LocationRequest locationRequest = new LocationRequest();
 		locationRequest.setInterval(10 * 1000);
 		locationRequest.setFastestInterval(5 * 1000);
-		locationRequest.setPriority(locationRequest.PRIORITY_HIGH_ACCURACY);
+		locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 		LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
 		builder.addLocationRequest(locationRequest);
@@ -45,10 +47,8 @@ public class LocationHelperActivity extends Activity {
 				.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
 					@Override
 					public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-
-						Log.d("XXX", "onSuccess -> onSuccess");
-
-//						requestLocationUpdates();
+						UnityCallbacks.onCheckLocationSettingsSuccess();
+						Log.d(TAG, "onSuccess -> onSuccess");
 						finish();
 					}
 				})
@@ -72,10 +72,8 @@ public class LocationHelperActivity extends Activity {
 				.addOnCanceledListener(new OnCanceledListener() {
 					@Override
 					public void onCanceled() {
-						Log.d("XXX", "checkLocationSettings -> onCanceled");
-
+						Log.d(TAG, "checkLocationSettings -> onCanceled");
 						finish();
-
 					}
 				});
 	}
@@ -85,10 +83,10 @@ public class LocationHelperActivity extends Activity {
 		super.onActivityResult(requestCode, resultCode, data);
 
 		if (resultCode == RESULT_OK) {
-			Intent mIntent = new Intent(this, NinevaLocationService.class);
-			Log.d("XXX", "onActivityResult -> OK");
+			UnityCallbacks.onCheckLocationSettingsSuccess();
+			Log.d(TAG, "onActivityResult -> OK");
 		} else {
-			Log.d("XXX", "onActivityResult -> else");
+			Log.d(TAG, "onActivityResult -> else");
 		}
 
 		finish();

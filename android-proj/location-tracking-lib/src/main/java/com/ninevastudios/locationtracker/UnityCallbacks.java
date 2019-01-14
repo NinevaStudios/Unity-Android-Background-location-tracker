@@ -6,6 +6,10 @@ public class UnityCallbacks {
 
 	private static final String UNITY_SCENE_HELPER_GAME_OBJECT_NAME = "LocationTrackingSceneHelper";
 
+	public static void onCheckLocationSettingsSuccess() {
+		sendMessage("OnCheckLocationSettingsSuccess", "TODO");
+	}
+
 	public static void onCheckLocationSettingsFailed() {
 		sendMessage("OnCheckLocationSettingsFailed", "TODO");
 	}

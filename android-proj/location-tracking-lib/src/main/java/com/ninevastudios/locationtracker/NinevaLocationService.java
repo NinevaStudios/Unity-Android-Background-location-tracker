@@ -7,7 +7,6 @@ import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Binder;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
@@ -16,7 +15,6 @@ import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
-import com.google.android.gms.common.api.ResolvableApiException;
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationRequest;
@@ -24,7 +22,6 @@ import com.google.android.gms.location.LocationResult;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResponse;
-import com.google.android.gms.location.SettingsClient;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,10 +29,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 @Keep
 public class NinevaLocationService extends Service {
 
-	IBinder binder = new LocalBinder();
-
 	private static final String TAG = NinevaLocationService.class.getSimpleName();
-	private static final int REQUEST_CHECK_SETTINGS = 666;
 
 	protected LocationSettingsRequest locationSettingsRequest;
 	private FusedLocationProviderClient fusedLocationClient;
@@ -49,7 +43,7 @@ public class NinevaLocationService extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
-		return binder;
+		return null;
 	}
 
 	@Override
@@ -66,7 +60,6 @@ public class NinevaLocationService extends Service {
 
 	private void init() {
 		fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-		SettingsClient mSettingsClient = LocationServices.getSettingsClient(this);
 
 		locationCallback = new LocationCallback() {
 			@Override
@@ -89,7 +82,7 @@ public class NinevaLocationService extends Service {
 		builder.setAlwaysShow(true);
 		locationSettingsRequest = builder.build();
 
-		mSettingsClient
+		LocationServices.getSettingsClient(this)
 				.checkLocationSettings(locationSettingsRequest)
 				.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
 					@Override
@@ -100,18 +93,7 @@ public class NinevaLocationService extends Service {
 				.addOnFailureListener(new OnFailureListener() {
 					@Override
 					public void onFailure(@NonNull Exception e) {
-						if (e instanceof ResolvableApiException) {
-
-							// TODO unity
-//							try {
-//								ResolvableApiException resolvable = (ResolvableApiException) e;
-//								resolvable.startResolutionForResult(this, REQUEST_CHECK_SETTINGS);
-//							} catch (IntentSender.SendIntentException sendEx) {
-//								UnityCallbacks.onCheckLocationSettingsFailed();
-//							}
-						} else {
-							UnityCallbacks.onCheckLocationSettingsFailed();
-						}
+						Log.d(TAG, "checkLocationSettings -> onFailure");
 					}
 				})
 				.addOnCanceledListener(new OnCanceledListener() {
@@ -120,13 +102,6 @@ public class NinevaLocationService extends Service {
 						Log.d(TAG, "checkLocationSettings -> onCanceled");
 					}
 				});
-	}
-
-	private void startResolutionActivity(@NonNull ResolvableApiException e) {
-		Intent intent = new Intent(NinevaLocationService.this, LocationHelperActivity.class);
-		intent.putExtra(LocationHelperActivity.EXTRA_EXCEPTION, e);
-		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-		startActivity(intent);
 	}
 
 	@SuppressLint("MissingPermission")
@@ -172,15 +147,5 @@ public class NinevaLocationService extends Service {
 //		builder.setContentIntent(pendingIntent);
 		Notification notification = builder.build();
 		startForeground(101, notification);
-	}
-
-	public void onResolutionResult() {
-		Log.d(TAG, "onResolutionResult");
-	}
-
-	public class LocalBinder extends Binder {
-		public NinevaLocationService getServerInstance() {
-			return NinevaLocationService.this;
-		}
 	}
 }
