@@ -2,11 +2,13 @@ package com.ninevastudios.locationtracker;
 
 import android.app.Activity;
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -47,7 +49,7 @@ public class LocationHelperActivity extends Activity {
 				.addOnSuccessListener(new OnSuccessListener<LocationSettingsResponse>() {
 					@Override
 					public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
-						UnityCallbacks.onCheckLocationSettingsSuccess();
+						requestBackgroundLocationUpdates();
 						Log.d(TAG, "onSuccess -> onSuccess");
 						finish();
 					}
@@ -78,12 +80,23 @@ public class LocationHelperActivity extends Activity {
 				});
 	}
 
+	@Keep
+	public void requestBackgroundLocationUpdates() {
+		this.startService(getIntent(this));
+		UnityCallbacks.onCheckLocationSettingsSuccess();
+	}
+
+	@NonNull
+	private static Intent getIntent(Context context) {
+		return new Intent(context.getApplicationContext(), NinevaLocationService.class);
+	}
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
 
 		if (resultCode == RESULT_OK) {
-			UnityCallbacks.onCheckLocationSettingsSuccess();
+			requestBackgroundLocationUpdates();
 			Log.d(TAG, "onActivityResult -> OK");
 		} else {
 			Log.d(TAG, "onActivityResult -> else");

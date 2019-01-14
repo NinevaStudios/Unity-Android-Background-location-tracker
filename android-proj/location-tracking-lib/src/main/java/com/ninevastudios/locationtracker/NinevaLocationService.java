@@ -106,7 +106,7 @@ public class NinevaLocationService extends Service {
 
 	@SuppressLint("MissingPermission")
 	private void requestLocationUpdates() {
-		if (RequestPermissionActivity.hasLocationPermission(this)) {
+		if (RequestPermissionActivity.hasLocationPermission(this.getApplicationContext())) {
 			fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
 		} else {
 			Log.e(TAG, "You must request location permissions before requesting location updates");
