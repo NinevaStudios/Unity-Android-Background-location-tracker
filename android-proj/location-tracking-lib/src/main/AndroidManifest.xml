@@ -2,7 +2,8 @@
     package="com.ninevastudios.locationtracker">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <application>
-        <service android:name=".LocationService" />
+        <service android:name=".NinevaLocationService" />
     </application>
 </manifest>
