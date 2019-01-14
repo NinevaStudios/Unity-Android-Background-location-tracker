@@ -1,0 +1,33 @@
+import org.gradle.tooling.GradleConnector
+import org.gradle.tooling.ProjectConnection
+import org.gradle.tooling.BuildLauncher
+import org.gradle.tooling.events.ProgressListener
+import org.gradle.tooling.events.ProgressEvent
+
+project.ext {
+    androidProjDir = "${rootDir}/android-proj"
+}
+
+task build << {
+    ProjectConnection connection = GradleConnector.newConnector()
+            .forProjectDirectory(new File(project.androidProjDir))
+            .connect();
+
+    try {
+        BuildLauncher build = connection.newBuild();
+        build.forTasks(":google-maps-view-lib:clean", ":google-maps-view-lib:build");
+        build.addProgressListener(new ProgressListener() {
+            @Override
+            void statusChanged(ProgressEvent progressEvent) {
+                logger.lifecycle("$progressEvent")
+            }
+        });
+        build.run();
+    } finally {
+        connection.close();
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = '2.14.1'
+}

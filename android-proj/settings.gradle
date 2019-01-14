@@ -1,0 +1,1 @@
+include ':location-tracking-lib', ':myapplication'
