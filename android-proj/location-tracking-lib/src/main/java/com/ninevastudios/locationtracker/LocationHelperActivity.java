@@ -1,13 +1,10 @@
 package com.ninevastudios.locationtracker;
 
 import android.app.Activity;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -35,8 +32,8 @@ public class LocationHelperActivity extends Activity {
 		SettingsClient settingsClient = LocationServices.getSettingsClient(this);
 
 		LocationRequest locationRequest = new LocationRequest();
-		locationRequest.setInterval(10 * 1000);
-		locationRequest.setFastestInterval(5 * 1000);
+		locationRequest.setInterval(10 * 1000L);
+		locationRequest.setFastestInterval(5 * 1000L);
 		locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
 
 		LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
