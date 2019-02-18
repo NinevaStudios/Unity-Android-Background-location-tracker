@@ -1,4 +1,6 @@
 ﻿
+using System.Text.RegularExpressions;
+
 #if UNITY_ANDROID
 namespace LocationTracking.Internal
 {
@@ -106,6 +108,12 @@ namespace LocationTracking.Internal
 					_queuedActions.RemoveAt(0);
 				}
 			}
+		}
+
+		public void OnLocationReceived(string latLong)
+		{
+			var location = Regex.Split(latLong, ",");
+			
 		}
 	}
 }
