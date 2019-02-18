@@ -1,21 +1,21 @@
 ﻿
 #if UNITY_ANDROID
-namespace DeadMosquito.AndroidGoodies.Internal
+namespace LocationTracking.Internal
 {
 	using System;
 	using System.Collections;
 	using System.Collections.Generic;
 	using UnityEngine;
 
-	class GoodiesSceneHelper : MonoBehaviour
+	class SceneHelper : MonoBehaviour
 	{
-		static GoodiesSceneHelper _instance;
+		static SceneHelper _instance;
 		static readonly object InitLock = new object();
 		readonly object _queueLock = new object();
 		readonly List<Action> _queuedActions = new List<Action>();
 		readonly List<Action> _executingActions = new List<Action>();
 
-		public static GoodiesSceneHelper Instance
+		public static SceneHelper Instance
 		{
 			get
 			{
@@ -37,23 +37,23 @@ namespace DeadMosquito.AndroidGoodies.Internal
 			{
 				if (ReferenceEquals(_instance, null))
 				{
-					var instances = FindObjectsOfType<GoodiesSceneHelper>();
+					var instances = FindObjectsOfType<SceneHelper>();
 
 					if (instances.Length > 1)
 					{
-						Debug.LogError(typeof(GoodiesSceneHelper) + " Something went really wrong " +
-						               " - there should never be more than 1 " + typeof(GoodiesSceneHelper) +
+						Debug.LogError(typeof(SceneHelper) + " Something went really wrong " +
+						               " - there should never be more than 1 " + typeof(SceneHelper) +
 						               " Reopening the scene might fix it.");
 					}
 					else if (instances.Length == 0)
 					{
 						GameObject singleton = new GameObject();
-						_instance = singleton.AddComponent<GoodiesSceneHelper>();
+						_instance = singleton.AddComponent<SceneHelper>();
 						singleton.name = "GoodiesSceneHelper";
 
 						DontDestroyOnLoad(singleton);
 
-						Debug.Log("[Singleton] An _instance of " + typeof(GoodiesSceneHelper) +
+						Debug.Log("[Singleton] An _instance of " + typeof(SceneHelper) +
 						          " is needed in the scene, so '" + singleton.name +
 						          "' was created with DontDestroyOnLoad.");
 					}
@@ -65,7 +65,7 @@ namespace DeadMosquito.AndroidGoodies.Internal
 			}
 		}
 
-		GoodiesSceneHelper()
+		SceneHelper()
 		{
 		}
 

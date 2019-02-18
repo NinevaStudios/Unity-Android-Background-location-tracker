@@ -1,24 +1,16 @@
-﻿
-using DeadMosquito.AndroidGoodies.Internal;
+﻿using LocationTracking.Scripts;
 using UnityEngine;
 
 public class Test : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
-
 	public void OnClick()
 	{
-		var intent = new AndroidIntent(AGUtils.ClassForName("com.ninevastudios.locationtracker.LocationHelperActivity"));
-		intent.SetFlags(AndroidIntent.Flags.ActivityNewTask | AndroidIntent.Flags.ActivityClearTask);
-		
-		AGUtils.StartActivity(intent.AJO);
+		var request = new LocationRequest {
+			interval = 60 * 1000L, 
+			maxWaitTime = 600 * 1000L, 
+			priority = LocationRequest.Priority.BalancedPowerAccuracy, 
+			fastestInterval = 30 * 1000L};
+
+		LocationTracker.RegisterLocationTrackingService(request);
 	}
 }

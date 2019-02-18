@@ -24,6 +24,10 @@ public class LocationHelperActivity extends Activity {
 	
 	private static final int REQUEST_CHECK_SETTINGS = 666;
 	public static final String EXTRA_EXCEPTION = "exception";
+	static final String EXTRA_REQUEST_INTERVAL = "com.ninevastudios.locationtracker.RequestInterval";
+	static final String EXTRA_REQUEST_FASTEST_INTERVAL = "com.ninevastudios.locationtracker.RequestFastestInterval";
+	static final String EXTRA_REQUEST_PRIORITY = "com.ninevastudios.locationtracker.RequestPriority";
+	static final String EXTRA_REQUEST_MAX_WAIT_TIME = "com.ninevastudios.locationtracker.RequestMaxWaitTime";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -32,9 +36,16 @@ public class LocationHelperActivity extends Activity {
 		SettingsClient settingsClient = LocationServices.getSettingsClient(this);
 
 		LocationRequest locationRequest = new LocationRequest();
-		locationRequest.setInterval(10 * 1000L);
-		locationRequest.setFastestInterval(5 * 1000L);
-		locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+		long interval = getIntent().getLongExtra(EXTRA_REQUEST_INTERVAL, 600 * 1000L);
+		long fastestInterval = getIntent().getLongExtra(EXTRA_REQUEST_FASTEST_INTERVAL,300 * 1000L);
+		int priority = getIntent().getIntExtra(EXTRA_REQUEST_PRIORITY, LocationRequest.PRIORITY_NO_POWER);
+		long maxWaitTime = getIntent().getLongExtra(EXTRA_REQUEST_MAX_WAIT_TIME, 6000 * 1000L);
+		locationRequest.setInterval(interval);
+		locationRequest.setFastestInterval(fastestInterval);
+		locationRequest.setPriority(priority);
+		locationRequest.setMaxWaitTime(maxWaitTime);
+
+		Log.d("LocationRequest: ", locationRequest.toString());
 
 		LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
 		builder.addLocationRequest(locationRequest);

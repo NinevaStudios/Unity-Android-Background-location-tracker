@@ -1,12 +1,12 @@
 ﻿#if UNITY_ANDROID
-namespace DeadMosquito.AndroidGoodies.Internal
+namespace LocationTracking.Internal
 {
 	using System;
 	using JetBrains.Annotations;
 	using UnityEngine;
 
 	[PublicAPI]
-	public static class AGUtils
+	public static class Utils
 	{
 		static AndroidJavaObject _activity;
 
@@ -133,7 +133,7 @@ namespace DeadMosquito.AndroidGoodies.Internal
 
 			if (isAndroid)
 			{
-				GoodiesSceneHelper.Init();
+				SceneHelper.Init();
 			}
 
 			return !isAndroid;
@@ -247,7 +247,7 @@ namespace DeadMosquito.AndroidGoodies.Internal
 
 		public static int RandomId()
 		{
-			return UnityEngine.Random.Range(Int32.MinValue, Int32.MaxValue);
+			return UnityEngine.Random.Range(int.MinValue, int.MaxValue);
 		}
 	}
 }

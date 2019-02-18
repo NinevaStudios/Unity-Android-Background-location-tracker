@@ -1,6 +1,6 @@
 ﻿#if UNITY_ANDROID
 
-namespace DeadMosquito.AndroidGoodies.Internal
+namespace LocationTracking.Internal
 {
 	public static class C
 	{

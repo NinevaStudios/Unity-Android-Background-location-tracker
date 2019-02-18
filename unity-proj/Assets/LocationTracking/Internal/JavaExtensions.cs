@@ -1,11 +1,11 @@
 ﻿#if UNITY_ANDROID
-namespace DeadMosquito.AndroidGoodies.Internal
+namespace LocationTracking.Internal
 {
 	using System;
 	using JetBrains.Annotations;
 	using UnityEngine;
 
-	static class AndroidGoodiesExtensions
+	static class JavaExtensions
 	{
 		[PublicAPI]
 		public static string GetAbsolutePath(this AndroidJavaObject ajo)

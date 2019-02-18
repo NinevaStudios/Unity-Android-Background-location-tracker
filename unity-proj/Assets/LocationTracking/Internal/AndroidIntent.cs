@@ -1,6 +1,6 @@
 ﻿
 #if UNITY_ANDROID
-namespace DeadMosquito.AndroidGoodies.Internal
+namespace LocationTracking.Internal
 {
 	using System;
 	using JetBrains.Annotations;
@@ -133,7 +133,7 @@ namespace DeadMosquito.AndroidGoodies.Internal
 		{
 			PlatformCheck();
 
-			_intent = new AndroidJavaObject(C.AndroidContentIntent, AGUtils.Activity, clazz);
+			_intent = new AndroidJavaObject(C.AndroidContentIntent, Utils.Activity, clazz);
 		}
 
 		public AndroidIntent(string action, AndroidJavaObject uri) : this(action)
@@ -248,7 +248,7 @@ namespace DeadMosquito.AndroidGoodies.Internal
 
 		public bool ResolveActivity()
 		{
-			using (var pm = AGUtils.PackageManager)
+			using (var pm = Utils.PackageManager)
 			{
 				try
 				{
