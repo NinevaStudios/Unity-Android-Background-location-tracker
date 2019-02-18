@@ -1,0 +1,3 @@
+[submodule "unity-proj/Assets/LocationTracking/Internal/JNIToolkit"]
+	path = unity-proj/Assets/LocationTracking/Internal/JNIToolkit
+	url = git@github.com:NinevaStudios/Unity-Android-JNI-Toolkit.git
