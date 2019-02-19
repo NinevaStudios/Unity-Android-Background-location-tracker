@@ -115,7 +115,7 @@ namespace LocationTracking.Scripts
 
 			isFromMockProvider = dic.GetBool(IsFromMockProvider);
 		}
-		
+
 		/// <summary>
 		/// Returns the approximate distance in meters between this location and the given location.
 		/// </summary>
@@ -127,7 +127,7 @@ namespace LocationTracking.Scripts
 			DistanceBetween(latitude, longitude, destination.latitude, destination.longitude, result);
 			return result[0];
 		}
-		
+
 		/// <summary>
 		/// Computes the approximate distance in meters between two locations, and optionally the initial and final bearings of the shortest path between them.
 		/// Distance and bearing are defined using the WGS84 ellipsoid.
@@ -136,7 +136,7 @@ namespace LocationTracking.Scripts
 		/// If results has length 2 or greater, the initial bearing is stored in results[1]. 
 		/// If results has length 3 or greater, the final bearing is stored in results[2].
 		/// </summary>
-		public static void DistanceBetween(double startLatitude, double startLongitude, double endLatitude, double endLongitude, float[] results) 
+		public static void DistanceBetween(double startLatitude, double startLongitude, double endLatitude, double endLongitude, float[] results)
 		{
 			if (results == null || results.Length < 1)
 			{
@@ -148,12 +148,12 @@ namespace LocationTracking.Scripts
 
 		public override string ToString()
 		{
-			return $"[Location: Latitude = {latitude}, Longitude = {longitude}, HasAccuracy = {hasAccuracy}, Accuracy = {accuracy}, Time = {time}," +
-			       $" HasSpeed = {hasSpeed}, Speed = {speed}, HasBearing = {hasBearing}, Bearing = {bearing}, HasAltitude = {hasAltitude}, Altitude = {altitude}, " +
-			       $"IsFromMockProvider = {isFromMockProvider}, ElapsedRealTime = {elapsedRealTime}, " +
-			       $"HasBearingAccuracy = {hasBearingAccuracy}, BearingAccuracy = {bearingAccuracy}, " +
-			       $"HasVerticalAccuracy = {hasVerticalAccuracy}, VerticalAccuracy = {verticalAccuracy}, " +
-			       $"HasSpeedAccuracy = {hasSpeedAccuracy}, SpeedAccuracy = {speedAccuracy}]";
+			return string.Format("[Location: Latitude = {0}, Longitude = {1}, HasAccuracy = {2}, Accuracy = {3}, Time = {4}, HasSpeed = {5}, Speed = {6}, " +
+			                     "HasBearing = {7}, Bearing = {8}, HasAltitude = {9}, Altitude = {10}, IsFromMockProvider = {11}, ElapsedRealTime = {12}, " +
+			                     "HasBearingAccuracy = {13}, BearingAccuracy = {14}, HasVerticalAccuracy = {15}, VerticalAccuracy = {16}, " +
+			                     "HasSpeedAccuracy = {17}, SpeedAccuracy = {18}]", latitude, longitude, hasAccuracy, accuracy, time, hasSpeed, speed,
+				hasBearing, bearing, hasAltitude, altitude, isFromMockProvider, elapsedRealTime, hasBearingAccuracy, bearingAccuracy,
+				hasVerticalAccuracy, verticalAccuracy, hasSpeedAccuracy, speedAccuracy);
 		}
 	}
 }
