@@ -113,6 +113,11 @@ namespace LocationTracking.Internal
 		{
 			LocationTracker.OnLocationReceived(new Location(locationJson));
 		}
+
+		public void OnServiceStopped(string message)
+		{
+			LocationTracker.OnServiceStopped(message);
+		}
 	}
 }
 #endif
