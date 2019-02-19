@@ -1,5 +1,4 @@
-﻿
-using System.Text.RegularExpressions;
+﻿using LocationTracking.Scripts;
 
 #if UNITY_ANDROID
 namespace LocationTracking.Internal
@@ -9,15 +8,15 @@ namespace LocationTracking.Internal
 	using System.Collections.Generic;
 	using UnityEngine;
 
-	class SceneHelper : MonoBehaviour
+	class LocationTrackingSceneHelper : MonoBehaviour
 	{
-		static SceneHelper _instance;
+		static LocationTrackingSceneHelper _instance;
 		static readonly object InitLock = new object();
 		readonly object _queueLock = new object();
 		readonly List<Action> _queuedActions = new List<Action>();
 		readonly List<Action> _executingActions = new List<Action>();
 
-		public static SceneHelper Instance
+		public static LocationTrackingSceneHelper Instance
 		{
 			get
 			{
@@ -39,23 +38,23 @@ namespace LocationTracking.Internal
 			{
 				if (ReferenceEquals(_instance, null))
 				{
-					var instances = FindObjectsOfType<SceneHelper>();
+					var instances = FindObjectsOfType<LocationTrackingSceneHelper>();
 
 					if (instances.Length > 1)
 					{
-						Debug.LogError(typeof(SceneHelper) + " Something went really wrong " +
-						               " - there should never be more than 1 " + typeof(SceneHelper) +
+						Debug.LogError(typeof(LocationTrackingSceneHelper) + " Something went really wrong " +
+						               " - there should never be more than 1 " + typeof(LocationTrackingSceneHelper) +
 						               " Reopening the scene might fix it.");
 					}
 					else if (instances.Length == 0)
 					{
 						GameObject singleton = new GameObject();
-						_instance = singleton.AddComponent<SceneHelper>();
+						_instance = singleton.AddComponent<LocationTrackingSceneHelper>();
 						singleton.name = "GoodiesSceneHelper";
 
 						DontDestroyOnLoad(singleton);
 
-						Debug.Log("[Singleton] An _instance of " + typeof(SceneHelper) +
+						Debug.Log("[Singleton] An _instance of " + typeof(LocationTrackingSceneHelper) +
 						          " is needed in the scene, so '" + singleton.name +
 						          "' was created with DontDestroyOnLoad.");
 					}
@@ -67,7 +66,7 @@ namespace LocationTracking.Internal
 			}
 		}
 
-		SceneHelper()
+		LocationTrackingSceneHelper()
 		{
 		}
 
@@ -110,10 +109,9 @@ namespace LocationTracking.Internal
 			}
 		}
 
-		public void OnLocationReceived(string latLong)
+		public void OnLocationReceived(string locationJson)
 		{
-			var location = Regex.Split(latLong, ",");
-			
+			LocationTracker.OnLocationReceived(new Location(locationJson));
 		}
 	}
 }

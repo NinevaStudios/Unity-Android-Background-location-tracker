@@ -67,11 +67,8 @@ public class NinevaLocationService extends Service {
 			@Override
 			public void onLocationResult(LocationResult locationResult) {
 				super.onLocationResult(locationResult);
-				double latitude = locationResult.getLastLocation().getLatitude();
-				double longitude = locationResult.getLastLocation().getLongitude();
-				UnityCallbacks.onLocationReceived(String.valueOf(latitude) + "," + String.valueOf(longitude));
+				UnityCallbacks.onLocationReceived(JsonUtil.serialize(locationResult.getLastLocation()));
 
-				// TODO push location to unity
 				// TODO save location to sqlite db
 				Log.d(TAG, "Location Received " + locationResult);
 			}

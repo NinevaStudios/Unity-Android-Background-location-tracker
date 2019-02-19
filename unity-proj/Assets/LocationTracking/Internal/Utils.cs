@@ -133,7 +133,7 @@ namespace LocationTracking.Internal
 
 			if (isAndroid)
 			{
-				SceneHelper.Init();
+				LocationTrackingSceneHelper.Init();
 			}
 
 			return !isAndroid;

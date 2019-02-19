@@ -1,5 +1,6 @@
 using System;
 using LocationTracking.Internal;
+using UnityEngine;
 
 namespace LocationTracking.Scripts
 {
@@ -10,7 +11,7 @@ namespace LocationTracking.Scripts
 		const string ExtraRequestPriority = "com.ninevastudios.locationtracker.RequestPriority";
 		const string ExtraRequestMaxWaitTime = "com.ninevastudios.locationtracker.RequestMaxWaitTime";
 
-		static Action _onSuccess;
+		public static Action<Location> onSuccess;
 		public static void RegisterLocationTrackingService(LocationRequest request)
 		{
 			var intent = new AndroidIntent(Utils.ClassForName("com.ninevastudios.locationtracker.LocationHelperActivity"));
@@ -23,10 +24,9 @@ namespace LocationTracking.Scripts
 			Utils.StartActivity(intent.AJO);
 		}
 		
-		
-		public static void OnLocationReceived()
+		public static void OnLocationReceived(Location location)
 		{
-		
+			onSuccess?.Invoke(location);
 		}
 	}
 }

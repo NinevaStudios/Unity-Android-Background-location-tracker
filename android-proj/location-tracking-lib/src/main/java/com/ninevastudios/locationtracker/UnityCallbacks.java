@@ -14,8 +14,8 @@ public class UnityCallbacks {
 		sendMessage("OnCheckLocationSettingsFailed", "TODO");
 	}
 
-	public static void onLocationReceived(String latLong) {
-		sendMessage("OnLocationReceived", latLong);
+	public static void onLocationReceived(String locationJson) {
+		sendMessage("OnLocationReceived", locationJson);
 	}
 
 	private static void sendMessage(String method, String msg) {
