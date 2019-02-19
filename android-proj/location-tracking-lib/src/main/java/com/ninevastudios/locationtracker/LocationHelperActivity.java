@@ -28,6 +28,9 @@ public class LocationHelperActivity extends Activity {
 	static final String EXTRA_REQUEST_FASTEST_INTERVAL = "com.ninevastudios.locationtracker.RequestFastestInterval";
 	static final String EXTRA_REQUEST_PRIORITY = "com.ninevastudios.locationtracker.RequestPriority";
 	static final String EXTRA_REQUEST_MAX_WAIT_TIME = "com.ninevastudios.locationtracker.RequestMaxWaitTime";
+	public static final String EXTRA_LOCATION_REQUEST = "com.ninevastudios.locationtracker.LocationRequest";
+
+	private LocationRequest locationRequest;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -35,11 +38,12 @@ public class LocationHelperActivity extends Activity {
 
 		SettingsClient settingsClient = LocationServices.getSettingsClient(this);
 
-		LocationRequest locationRequest = new LocationRequest();
 		long interval = getIntent().getLongExtra(EXTRA_REQUEST_INTERVAL, 600 * 1000L);
 		long fastestInterval = getIntent().getLongExtra(EXTRA_REQUEST_FASTEST_INTERVAL,300 * 1000L);
 		int priority = getIntent().getIntExtra(EXTRA_REQUEST_PRIORITY, LocationRequest.PRIORITY_NO_POWER);
 		long maxWaitTime = getIntent().getLongExtra(EXTRA_REQUEST_MAX_WAIT_TIME, 6000 * 1000L);
+
+		locationRequest = new LocationRequest();
 		locationRequest.setInterval(interval);
 		locationRequest.setFastestInterval(fastestInterval);
 		locationRequest.setPriority(priority);
@@ -90,13 +94,15 @@ public class LocationHelperActivity extends Activity {
 
 	@Keep
 	public void requestBackgroundLocationUpdates() {
-		this.startService(getIntent(this));
+		this.startService(createIntent(this));
 		UnityCallbacks.onCheckLocationSettingsSuccess();
 	}
 
 	@NonNull
-	private static Intent getIntent(Context context) {
-		return new Intent(context.getApplicationContext(), NinevaLocationService.class);
+	private Intent createIntent(Context context) {
+		Intent intent =  new Intent(context.getApplicationContext(), NinevaLocationService.class);
+		intent.putExtra(EXTRA_LOCATION_REQUEST, locationRequest);
+		return intent;
 	}
 
 	@Override

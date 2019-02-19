@@ -26,8 +26,6 @@ import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import static com.google.android.gms.location.LocationRequest.PRIORITY_HIGH_ACCURACY;
-
 @Keep
 public class NinevaLocationService extends Service {
 
@@ -53,6 +51,10 @@ public class NinevaLocationService extends Service {
 		Log.d(TAG, "onStartCommand");
 		super.onStartCommand(intent, flags, startId);
 
+		locationRequest = intent.getParcelableExtra(LocationHelperActivity.EXTRA_LOCATION_REQUEST);
+
+		Log.d(TAG, locationRequest.toString());
+
 		createForegroundNotification();
 
 		init();
@@ -73,11 +75,6 @@ public class NinevaLocationService extends Service {
 				Log.d(TAG, "Location Received " + locationResult);
 			}
 		};
-
-		locationRequest = new LocationRequest();
-		locationRequest.setInterval(10 * 1000);
-		locationRequest.setFastestInterval(5 * 1000);
-		locationRequest.setPriority(PRIORITY_HIGH_ACCURACY);
 
 		LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
 		builder.addLocationRequest(locationRequest);
