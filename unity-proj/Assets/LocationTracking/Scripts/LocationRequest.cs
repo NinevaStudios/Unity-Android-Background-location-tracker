@@ -3,7 +3,7 @@ using JetBrains.Annotations;
 namespace LocationTracking.Scripts
 {
 	[PublicAPI]
-	public class LocationRequest
+	public struct LocationRequest
 	{
 		[PublicAPI]
 		public enum Priority

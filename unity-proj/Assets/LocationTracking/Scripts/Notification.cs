@@ -1,6 +1,6 @@
 namespace LocationTracking.Scripts
 {
-	public class Notification
+	public struct Notification
 	{
 		
 	}

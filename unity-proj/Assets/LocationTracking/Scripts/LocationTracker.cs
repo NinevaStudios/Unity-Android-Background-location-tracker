@@ -12,16 +12,16 @@ namespace LocationTracking.Scripts
 
 		static Action<Location> _onLocationReceived;
 		
-		public static void StartLocationTracking(LocationRequest request, Action<Location> onLocationReceived, Action<string> onError = null)
+		public static void StartLocationTracking(TrackingOptions options, Action<Location> onLocationReceived, Action<string> onError = null)
 		{
 			_onLocationReceived = onLocationReceived;
 			
 			var intent = new AndroidIntent(Utils.ClassForName("com.ninevastudios.locationtracker.LocationHelperActivity"));
 			intent.SetFlags(AndroidIntent.Flags.ActivityNewTask | AndroidIntent.Flags.ActivityClearTask);
-			intent.PutExtra(ExtraRequestInterval, request.interval);
-			intent.PutExtra(ExtraRequestFastestInterval, request.fastestInterval);
-			intent.PutExtra(ExtraRequestPriority, (int) request.priority);
-			intent.PutExtra(ExtraRequestMaxWaitTime, request.maxWaitTime);
+			intent.PutExtra(ExtraRequestInterval, options.request.interval);
+			intent.PutExtra(ExtraRequestFastestInterval, options.request.fastestInterval);
+			intent.PutExtra(ExtraRequestPriority, (int) options.request.priority);
+			intent.PutExtra(ExtraRequestMaxWaitTime, options.request.maxWaitTime);
 		
 			Utils.StartActivity(intent.AJO);
 		}

@@ -19,6 +19,8 @@ public class Test : MonoBehaviour
 			fastestInterval = 5 * 1000L
 		};
 
-		LocationTracker.StartLocationTracking(request, location => { text.text += ++_ticks + ". " + location.ToString() + "\n"; });
+		var options = new TrackingOptions {request = request};
+
+		LocationTracker.StartLocationTracking(options, location => { text.text += ++_ticks + ". " + location.ToString() + "\n"; });
 	}
 }
