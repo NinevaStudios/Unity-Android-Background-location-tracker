@@ -49,6 +49,7 @@ namespace LocationTracking.Scripts
 
 		public static void OnServiceStopped(string message)
 		{
+			if(_onServiceStopped != null)
 			_onServiceStopped(message);
 		}
 	}

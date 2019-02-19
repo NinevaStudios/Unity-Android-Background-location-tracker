@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
@@ -30,6 +31,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 public class NinevaLocationService extends Service {
 
 	private static final String TAG = NinevaLocationService.class.getSimpleName();
+	private static final String ACTION_STOP = "com.ninevastudios.locationtracker.StopService";
 
 	protected LocationSettingsRequest locationSettingsRequest;
 	private FusedLocationProviderClient fusedLocationClient;
@@ -48,12 +50,16 @@ public class NinevaLocationService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		Log.d(TAG, "onStartCommand");
 		super.onStartCommand(intent, flags, startId);
+		Log.d(TAG, "onStartCommand");
+		if (ACTION_STOP.equals(intent.getAction())) {
+			Log.d(TAG, "ActionDestroy");
+			stopSelf();
+			return START_STICKY;
+		}
+
 
 		locationRequest = intent.getParcelableExtra(LocationHelperActivity.EXTRA_LOCATION_REQUEST);
-
-		Log.d(TAG, locationRequest.toString());
 
 		createForegroundNotification();
 
@@ -144,6 +150,11 @@ public class NinevaLocationService extends Service {
 		builder.setContentTitle("Your title");
 		builder.setContentText("You are now online");
 		builder.setSmallIcon(R.drawable.common_google_signin_btn_icon_dark);
+
+		Intent intentHide = new Intent(getApplicationContext(), NinevaLocationService.class);
+		intentHide.setAction(ACTION_STOP);
+		PendingIntent hide = PendingIntent.getBroadcast(getApplicationContext(), 0, intentHide, PendingIntent.FLAG_CANCEL_CURRENT);
+		builder.addAction(0, "Stop service", hide);
 
 		// TODO start the app
 //		builder.setContentIntent(pendingIntent);
