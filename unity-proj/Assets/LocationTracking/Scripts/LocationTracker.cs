@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using LocationTracking.Internal;
 using UnityEngine;
 
@@ -29,10 +30,35 @@ namespace LocationTracking.Scripts
 		
 			Utils.StartActivity(intent.AJO);
 		}
-		
-		// get list from db
-		// clean db
-		// stop tracking
+
+		/// <summary>
+		/// Count of saved locations in the local database
+		/// </summary>
+		public static int SavedLocationsCount
+		{
+			get
+			{
+				// TOD Oimplement
+				return 0;
+			}
+		}
+
+		public static List<Location> PersistedLocations
+		{
+			get
+			{
+				// TODO implement
+				return null;
+			}
+		}
+
+		/// <summary>
+		/// Delete all persisted locations from the local database
+		/// </summary>
+		public static void CleanDatabase()
+		{
+			// TODO implement
+		}
 
 		public static void StopLocationTracking(Action<string> onServiceStopped = null)
 		{
