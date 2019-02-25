@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using LocationTracking.Internal;
+using Nineva.LocationTracker;
 using UnityEngine;
 
 namespace LocationTracking.Scripts
@@ -38,8 +39,8 @@ namespace LocationTracking.Scripts
 		{
 			get
 			{
-				// TOD Oimplement
-				return 0;
+				var databaseHelper = new AndroidJavaClass(ServiceClassName);
+				return JavaExtensions.CallStaticInt(databaseHelper, "getNumberOfRows", Utils.Activity);
 			}
 		}
 
@@ -47,8 +48,17 @@ namespace LocationTracking.Scripts
 		{
 			get
 			{
-				// TODO implement
-				return null;
+				var locationsList = new List<Location>();
+				
+				var databaseHelper = new AndroidJavaClass(ServiceClassName);
+				var listAjo = JavaExtensions.CallStaticAJO(databaseHelper, "getAllLocations", Utils.Activity);
+				var list = listAjo.FromJavaList<string>();
+				foreach (var entry in list)
+				{
+					locationsList.Add(new Location(entry));
+				}
+				
+				return locationsList;
 			}
 		}
 
@@ -57,14 +67,15 @@ namespace LocationTracking.Scripts
 		/// </summary>
 		public static void CleanDatabase()
 		{
-			// TODO implement
+			var databaseHelper = new AndroidJavaClass(ServiceClassName);
+			databaseHelper.CallStatic("deleteAllEntries", Utils.Activity);
 		}
 
 		public static void StopLocationTracking(Action<string> onServiceStopped = null)
 		{
 			_onServiceStopped = onServiceStopped;
 			
-			Utils.Activity.CallBool("stopService", new AndroidIntent(new AndroidJavaClass(ServiceClassName)).AJO);
+			JavaExtensions.CallBool(Utils.Activity, "stopService", new AndroidIntent(new AndroidJavaClass(ServiceClassName)).AJO);
 		}
 		
 		public static void OnLocationReceived(Location location)

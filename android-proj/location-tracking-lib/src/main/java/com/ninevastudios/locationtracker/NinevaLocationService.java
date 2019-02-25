@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
@@ -26,6 +27,8 @@ import com.google.android.gms.location.LocationSettingsResponse;
 import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+
+import java.util.ArrayList;
 
 @Keep
 public class NinevaLocationService extends Service {
@@ -75,9 +78,13 @@ public class NinevaLocationService extends Service {
 			@Override
 			public void onLocationResult(LocationResult locationResult) {
 				super.onLocationResult(locationResult);
-				UnityCallbacks.onLocationReceived(JsonUtil.serialize(locationResult.getLastLocation()));
+
+				Location location = locationResult.getLastLocation();
+				UnityCallbacks.onLocationReceived(JsonUtil.serialize(location));
 
 				// TODO save location to sqlite db
+				DbHelper.getInstance(getApplicationContext()).saveLocation(location);
+
 				Log.d(TAG, "Location Received " + locationResult);
 			}
 		};
@@ -107,6 +114,24 @@ public class NinevaLocationService extends Service {
 						Log.d(TAG, "checkLocationSettings -> onCanceled");
 					}
 				});
+	}
+
+	@Keep
+	public static int getNumberOfRows(Context context)
+	{
+		return DbHelper.getInstance(context.getApplicationContext()).numberOfRows();
+	}
+
+	@Keep
+	public static ArrayList<String> getAllLocations(Context context)
+	{
+		return DbHelper.getInstance(context.getApplicationContext()).getAllLocations();
+	}
+
+	@Keep
+	public static void deleteAllEntries(Context context)
+	{
+		DbHelper.getInstance(context.getApplicationContext()).deleteAllEntries();
 	}
 
 	@SuppressLint("MissingPermission")
