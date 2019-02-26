@@ -5,23 +5,20 @@ using UnityEngine.UI;
 
 public class Test : MonoBehaviour
 {
-	[SerializeField]
-	Text locationText, numberText;
+	[SerializeField] Text locationText, numberText;
 
 	int _ticks;
 
 	[UsedImplicitly]
 	public void OnStartTracking()
 	{
-		var request = new LocationRequest
-		{
-			interval = 10 * 1000L,
-			maxWaitTime = 60 * 1000L,
-			priority = LocationRequest.Priority.BalancedPowerAccuracy,
-			fastestInterval = 5 * 1000L
-		};
+		var interval = 10 * 1000L;
+		var fastestInterval = 60 * 1000L;
+		var maxWaitTime = 5 * 1000L;
+		var priority = LocationRequest.Priority.BalancedPowerAccuracy;
+		var request = new LocationRequest(interval, fastestInterval, priority, maxWaitTime);
 
-		var options = new TrackingOptions {request = request};
+		var options = new TrackingOptions(request);
 
 		LocationTracker.StartLocationTracking(options, location =>
 		{

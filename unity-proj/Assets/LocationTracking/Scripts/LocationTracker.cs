@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using LocationTracking.Internal;
 using Nineva.LocationTracker;
 using UnityEngine;
@@ -18,18 +19,29 @@ namespace LocationTracking.Scripts
 		static Action<Location> _onLocationReceived;
 		static Action<string> _onServiceStopped;
 		
-		public static void StartLocationTracking(TrackingOptions options, Action<Location> onLocationReceived, Action<string> onError = null)
+		public static void StartLocationTracking([NotNull] TrackingOptions options, Action<Location> onLocationReceived, Action<string> onError = null)
 		{
+			if (options == null)
+			{
+				throw new ArgumentNullException("options");
+			}
+
 			_onLocationReceived = onLocationReceived;
 			
+			var intent = GetIntent(options);
+
+			Utils.StartActivity(intent.AJO);
+		}
+
+		static AndroidIntent GetIntent(TrackingOptions options)
+		{
 			var intent = new AndroidIntent(Utils.ClassForName("com.ninevastudios.locationtracker.LocationHelperActivity"));
 			intent.SetFlags(AndroidIntent.Flags.ActivityNewTask | AndroidIntent.Flags.ActivityClearTask);
-			intent.PutExtra(ExtraRequestInterval, options.request.interval);
-			intent.PutExtra(ExtraRequestFastestInterval, options.request.fastestInterval);
-			intent.PutExtra(ExtraRequestPriority, (int) options.request.priority);
-			intent.PutExtra(ExtraRequestMaxWaitTime, options.request.maxWaitTime);
-		
-			Utils.StartActivity(intent.AJO);
+			intent.PutExtra(ExtraRequestInterval, options.Request.Interval);
+			intent.PutExtra(ExtraRequestFastestInterval, options.Request.FastestInterval);
+			intent.PutExtra(ExtraRequestPriority, (int) options.Request.Priority);
+			intent.PutExtra(ExtraRequestMaxWaitTime, options.Request.MaxWaitTime);
+			return intent;
 		}
 
 		/// <summary>
