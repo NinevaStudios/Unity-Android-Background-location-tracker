@@ -15,7 +15,7 @@ public class Test : MonoBehaviour
 		var interval = 10 * 1000L;
 		var fastestInterval = 60 * 1000L;
 		var maxWaitTime = 5 * 1000L;
-		var priority = LocationRequest.Priority.BalancedPowerAccuracy;
+		var priority = LocationRequest.TrackingPriority.BalancedPowerAccuracy;
 		var request = new LocationRequest(interval, fastestInterval, priority, maxWaitTime);
 
 		var options = new TrackingOptions(request);

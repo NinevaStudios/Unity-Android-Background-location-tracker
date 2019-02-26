@@ -7,18 +7,19 @@ using UnityEngine;
 
 namespace LocationTracking.Scripts
 {
+	[PublicAPI]
 	public static class LocationTracker
 	{
 		const string ExtraRequestInterval = "com.ninevastudios.locationtracker.RequestInterval";
 		const string ExtraRequestFastestInterval = "com.ninevastudios.locationtracker.RequestFastestInterval";
 		const string ExtraRequestPriority = "com.ninevastudios.locationtracker.RequestPriority";
 		const string ExtraRequestMaxWaitTime = "com.ninevastudios.locationtracker.RequestMaxWaitTime";
-		
+
 		const string ServiceClassName = "com.ninevastudios.locationtracker.NinevaLocationService";
 
 		static Action<Location> _onLocationReceived;
 		static Action<string> _onServiceStopped;
-		
+
 		public static void StartLocationTracking([NotNull] TrackingOptions options, Action<Location> onLocationReceived, Action<string> onError = null)
 		{
 			if (options == null)
@@ -27,7 +28,7 @@ namespace LocationTracking.Scripts
 			}
 
 			_onLocationReceived = onLocationReceived;
-			
+
 			var intent = GetIntent(options);
 
 			Utils.StartActivity(intent.AJO);
@@ -56,12 +57,15 @@ namespace LocationTracking.Scripts
 			}
 		}
 
+		/// <summary>
+		/// Returns the locations cached in the local database
+		/// </summary>
 		public static List<Location> PersistedLocations
 		{
 			get
 			{
 				var locationsList = new List<Location>();
-				
+
 				var databaseHelper = new AndroidJavaClass(ServiceClassName);
 				var listAjo = JavaExtensions.CallStaticAJO(databaseHelper, "getAllLocations", Utils.Activity);
 				var list = listAjo.FromJavaList<string>();
@@ -69,7 +73,7 @@ namespace LocationTracking.Scripts
 				{
 					locationsList.Add(new Location(entry));
 				}
-				
+
 				return locationsList;
 			}
 		}
@@ -86,20 +90,24 @@ namespace LocationTracking.Scripts
 		public static void StopLocationTracking(Action<string> onServiceStopped = null)
 		{
 			_onServiceStopped = onServiceStopped;
-			
+
 			JavaExtensions.CallBool(Utils.Activity, "stopService", new AndroidIntent(new AndroidJavaClass(ServiceClassName)).AJO);
 		}
-		
+
 		public static void OnLocationReceived(Location location)
 		{
-			if(_onLocationReceived != null)
-			_onLocationReceived(location);
+			if (_onLocationReceived != null)
+			{
+				_onLocationReceived(location);
+			}
 		}
 
 		public static void OnServiceStopped(string message)
 		{
-			if(_onServiceStopped != null)
-			_onServiceStopped(message);
+			if (_onServiceStopped != null)
+			{
+				_onServiceStopped(message);
+			}
 		}
 	}
 }

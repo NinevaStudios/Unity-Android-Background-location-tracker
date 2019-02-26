@@ -5,28 +5,25 @@ namespace LocationTracking.Scripts
 	[PublicAPI]
 	public class TrackingOptions
 	{
-		LocationRequest _request;
-		Notification _notification;
+		public LocationRequest Request { get; private set; }
 
-		public LocationRequest Request
-		{
-			get { return _request; }
-		}
+		public Notification Notification { get; private set; }
 
-		public Notification Notification
-		{
-			get { return _notification; }
-		}
+		public bool TrackInBackground { get; private set; }
 
 		public TrackingOptions([NotNull] LocationRequest request)
 		{
-			_request = request;
+			Request = request;
+			TrackInBackground = true;
+			// TODO default notification
 		}
 
 		public TrackingOptions SetNotification([NotNull] Notification notification)
 		{
-			_notification = notification;
+			Notification = notification;
 			return this;
 		}
+		
+		
 	}
 }
