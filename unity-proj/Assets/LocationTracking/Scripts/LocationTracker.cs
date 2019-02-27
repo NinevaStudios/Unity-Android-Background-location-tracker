@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using JetBrains.Annotations;
 using LocationTracking.Internal;
 using Nineva.LocationTracker;
@@ -64,17 +65,12 @@ namespace LocationTracking.Scripts
 		{
 			get
 			{
-				var locationsList = new List<Location>();
-
 				var databaseHelper = new AndroidJavaClass(ServiceClassName);
-				var listAjo = JavaExtensions.CallStaticAJO(databaseHelper, "getAllLocations", Utils.Activity);
-				var list = listAjo.FromJavaList<string>();
-				foreach (var entry in list)
-				{
-					locationsList.Add(new Location(entry));
-				}
+				var str = JavaExtensions.CallStaticStr(databaseHelper, "getAllLocations", Utils.Activity);
 
-				return locationsList;
+				var array = str.Split(';');
+
+				return array.Select(item => new Location(item)).ToList();
 			}
 		}
 

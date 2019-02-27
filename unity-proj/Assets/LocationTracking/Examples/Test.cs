@@ -22,6 +22,7 @@ public class Test : MonoBehaviour
 
 		LocationTracker.StartLocationTracking(options, location =>
 		{
+			locationText.horizontalOverflow = HorizontalWrapMode.Wrap;
 			locationText.text = ++_ticks + ". " + location.ToString() + "\n";
 			numberText.text = LocationTracker.SavedLocationsCount.ToString();
 		});
@@ -38,5 +39,16 @@ public class Test : MonoBehaviour
 	public void OnClearDatabase()
 	{
 		LocationTracker.CleanDatabase();
+	}
+
+	[UsedImplicitly]
+	public void OnPrintAllLocations()
+	{
+		locationText.text = "";
+		locationText.horizontalOverflow = HorizontalWrapMode.Overflow;
+		foreach (var location in LocationTracker.PersistedLocations)
+		{
+			locationText.text += location + "\n";
+		}
 	}
 }

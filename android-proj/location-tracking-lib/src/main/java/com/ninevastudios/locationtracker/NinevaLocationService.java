@@ -1,6 +1,7 @@
 package com.ninevastudios.locationtracker;
 
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -15,6 +16,7 @@ import android.os.Looper;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
@@ -29,6 +31,7 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 @Keep
 public class NinevaLocationService extends Service {
@@ -117,20 +120,18 @@ public class NinevaLocationService extends Service {
 	}
 
 	@Keep
-	public static int getNumberOfRows(Context context)
-	{
+	public static int getNumberOfRows(Context context) {
 		return DbHelper.getInstance(context.getApplicationContext()).numberOfRows();
 	}
 
 	@Keep
-	public static ArrayList<String> getAllLocations(Context context)
-	{
-		return DbHelper.getInstance(context.getApplicationContext()).getAllLocations();
+	public static String getAllLocations(Context context) {
+		ArrayList<String> locationsArray = DbHelper.getInstance(context.getApplicationContext()).getAllLocations();
+		return TextUtils.join(";", locationsArray);
 	}
 
 	@Keep
-	public static void deleteAllEntries(Context context)
-	{
+	public static void deleteAllEntries(Context context) {
 		DbHelper.getInstance(context.getApplicationContext()).deleteAllEntries();
 	}
 
