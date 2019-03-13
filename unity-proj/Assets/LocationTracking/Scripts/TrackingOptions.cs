@@ -15,7 +15,7 @@ namespace LocationTracking.Scripts
 		{
 			Request = request;
 			TrackInBackground = true;
-			// TODO default notification
+			Notification = Notification.DefaultNotification();
 		}
 
 		public TrackingOptions SetNotification([NotNull] Notification notification)
@@ -23,7 +23,5 @@ namespace LocationTracking.Scripts
 			Notification = notification;
 			return this;
 		}
-		
-		
 	}
 }

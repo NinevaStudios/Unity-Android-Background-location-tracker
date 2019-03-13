@@ -15,6 +15,13 @@ namespace LocationTracking.Scripts
 		const string ExtraRequestFastestInterval = "com.ninevastudios.locationtracker.RequestFastestInterval";
 		const string ExtraRequestPriority = "com.ninevastudios.locationtracker.RequestPriority";
 		const string ExtraRequestMaxWaitTime = "com.ninevastudios.locationtracker.RequestMaxWaitTime";
+		
+		const string ExtraNotificationTitle = "com.ninevastudios.locationtracker.NotificationTitle";
+		const string ExtraNotificationContent = "com.ninevastudios.locationtracker.NotificationContent";
+		const string ExtraNotificationVisibility = "com.ninevastudios.locationtracker.NotificationVisibility";
+		const string ExtraNotificationImportance = "com.ninevastudios.locationtracker.NotificationImportance";
+		const string ExtraNotificationHasStopServiceAction = "com.ninevastudios.locationtracker.NotificationHasStopServiceAction";
+		const string ExtraNotificationStopServiceActionName = "com.ninevastudios.locationtracker.NotificationStopServiceActionName";
 
 		const string ServiceClassName = "com.ninevastudios.locationtracker.NinevaLocationService";
 
@@ -39,10 +46,21 @@ namespace LocationTracking.Scripts
 		{
 			var intent = new AndroidIntent(Utils.ClassForName("com.ninevastudios.locationtracker.LocationHelperActivity"));
 			intent.SetFlags(AndroidIntent.Flags.ActivityNewTask | AndroidIntent.Flags.ActivityClearTask);
-			intent.PutExtra(ExtraRequestInterval, options.Request.Interval);
-			intent.PutExtra(ExtraRequestFastestInterval, options.Request.FastestInterval);
-			intent.PutExtra(ExtraRequestPriority, (int) options.Request.Priority);
-			intent.PutExtra(ExtraRequestMaxWaitTime, options.Request.MaxWaitTime);
+
+			var request = options.Request;
+			intent.PutExtra(ExtraRequestInterval, request.Interval);
+			intent.PutExtra(ExtraRequestFastestInterval, request.FastestInterval);
+			intent.PutExtra(ExtraRequestPriority, (int) request.Priority);
+			intent.PutExtra(ExtraRequestMaxWaitTime, request.MaxWaitTime);
+
+			var notification = options.Notification;
+			intent.PutExtra(ExtraNotificationTitle, notification.title);
+			intent.PutExtra(ExtraNotificationContent, notification.content);
+			intent.PutExtra(ExtraNotificationImportance, (int) notification.importance);
+			intent.PutExtra(ExtraNotificationVisibility, (int) notification.visibility);
+			intent.PutExtra(ExtraNotificationHasStopServiceAction, notification.hasStopServiceAction);
+			intent.PutExtra(ExtraNotificationStopServiceActionName, notification.stopServiceActionName);
+			
 			return intent;
 		}
 

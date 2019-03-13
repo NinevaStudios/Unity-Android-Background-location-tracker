@@ -165,7 +165,6 @@ public class NinevaLocationService extends Service {
 
 			notificationManager.createNotificationChannel(channel);
 			builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID);
-			builder.setChannelId(CHANNEL_ID);
 			builder.setBadgeIconType(NotificationCompat.BADGE_ICON_NONE);
 			builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
 		} else {
@@ -174,7 +173,7 @@ public class NinevaLocationService extends Service {
 
 		builder.setContentTitle("Your title");
 		builder.setContentText("You are now online");
-		builder.setSmallIcon(R.drawable.common_google_signin_btn_icon_dark);
+		//builder.setSmallIcon(R.drawable.common_google_signin_btn_icon_dark);
 
 		Intent intentHide = new Intent(this, NinevaLocationService.class);
 		intentHide.setAction(ACTION_STOP);
