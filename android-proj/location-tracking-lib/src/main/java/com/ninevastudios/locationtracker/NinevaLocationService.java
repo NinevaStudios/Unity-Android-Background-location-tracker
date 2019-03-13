@@ -56,22 +56,19 @@ public class NinevaLocationService extends Service {
 
 	@Override
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		super.onStartCommand(intent, flags, startId);
 		Log.d(TAG, "onStartCommand");
-		if (ACTION_STOP.equals(intent.getAction())) {
-			Log.d(TAG, "ActionDestroy");
-			stopSelf();
-			return START_STICKY;
+
+		if (intent.getAction() != null && intent.getAction().equals(ACTION_STOP)) {
+			Log.d(TAG, "onStartCommand - STOP");
+			Intent stopIntent = new Intent(getApplicationContext(), NinevaLocationService.class);
+			stopService(stopIntent);
+		} else {
+			locationRequest = intent.getParcelableExtra(LocationHelperActivity.EXTRA_LOCATION_REQUEST);
+			createForegroundNotification();
+			init();
 		}
 
-
-		locationRequest = intent.getParcelableExtra(LocationHelperActivity.EXTRA_LOCATION_REQUEST);
-
-		createForegroundNotification();
-
-		init();
-
-		return START_STICKY;
+		return super.onStartCommand(intent, flags, startId);
 	}
 
 	private void init() {
@@ -165,10 +162,12 @@ public class NinevaLocationService extends Service {
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
 			NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
 			channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+
 			notificationManager.createNotificationChannel(channel);
 			builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID);
 			builder.setChannelId(CHANNEL_ID);
 			builder.setBadgeIconType(NotificationCompat.BADGE_ICON_NONE);
+			builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
 		} else {
 			builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID);
 		}
@@ -177,9 +176,9 @@ public class NinevaLocationService extends Service {
 		builder.setContentText("You are now online");
 		builder.setSmallIcon(R.drawable.common_google_signin_btn_icon_dark);
 
-		Intent intentHide = new Intent(getApplicationContext(), NinevaLocationService.class);
+		Intent intentHide = new Intent(this, NinevaLocationService.class);
 		intentHide.setAction(ACTION_STOP);
-		PendingIntent hide = PendingIntent.getBroadcast(getApplicationContext(), 0, intentHide, PendingIntent.FLAG_CANCEL_CURRENT);
+		PendingIntent hide = PendingIntent.getService(this, 0, intentHide, 0);
 		builder.addAction(0, "Stop service", hide);
 
 		// TODO start the app
