@@ -1,8 +1,6 @@
 package com.ninevastudios.locationtracker;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -17,7 +15,6 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;

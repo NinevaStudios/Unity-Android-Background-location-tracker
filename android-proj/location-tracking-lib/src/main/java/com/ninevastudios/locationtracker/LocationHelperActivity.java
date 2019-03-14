@@ -21,7 +21,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 public class LocationHelperActivity extends Activity {
 	private static final String TAG = LocationHelperActivity.class.getSimpleName();
-	
+
 	public static final int REQUEST_CHECK_SETTINGS = 666;
 	public static final String EXTRA_EXCEPTION = "exception";
 	static final String EXTRA_REQUEST_INTERVAL = "com.ninevastudios.locationtracker.RequestInterval";
@@ -47,32 +47,8 @@ public class LocationHelperActivity extends Activity {
 		SettingsClient settingsClient = LocationServices.getSettingsClient(this);
 
 		Intent intent = getIntent();
-
-		long interval = intent.getLongExtra(EXTRA_REQUEST_INTERVAL, 600 * 1000L);
-		long fastestInterval = intent.getLongExtra(EXTRA_REQUEST_FASTEST_INTERVAL,300 * 1000L);
-		int priority = intent.getIntExtra(EXTRA_REQUEST_PRIORITY, LocationRequest.PRIORITY_NO_POWER);
-		long maxWaitTime = intent.getLongExtra(EXTRA_REQUEST_MAX_WAIT_TIME, 6000 * 1000L);
-
-		locationRequest = new LocationRequest();
-		locationRequest.setInterval(interval);
-		locationRequest.setFastestInterval(fastestInterval);
-		locationRequest.setPriority(priority);
-		locationRequest.setMaxWaitTime(maxWaitTime);
-
-		Log.d("LocationRequest: ", locationRequest.toString());
-
-		LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-		builder.addLocationRequest(locationRequest);
-		builder.setAlwaysShow(true);
-		LocationSettingsRequest locationSettingsRequest = builder.build();
-
-		notificationData = new NotificationData();
-		notificationData.title = intent.getStringExtra(EXTRA_NOTIFICATION_TITLE);
-		notificationData.content = intent.getStringExtra(EXTRA_NOTIFICATION_CONTENT);
-		notificationData.visibility = intent.getIntExtra(EXTRA_NOTIFICATION_VISIBILITY, 0);
-		notificationData.importance = intent.getIntExtra(EXTRA_NOTIFICATION_IMPORTANCE, 3);
-		notificationData.hasStopServiceAction = intent.getBooleanExtra(EXTRA_NOTIFICATION_HAS_STOP_SERVICE_ACTION, true);
-		notificationData.stopServiceActionTitle = intent.getStringExtra(EXTRA_NOTIFICATION_STOP_SERVICE_ACTION_NAME);
+		LocationSettingsRequest locationSettingsRequest = createLocationRequest(intent);
+		createNotificationData(intent);
 
 		settingsClient
 				.checkLocationSettings(locationSettingsRequest)
@@ -96,9 +72,8 @@ public class LocationHelperActivity extends Activity {
 							}
 						} else {
 							UnityCallbacks.onCheckLocationSettingsFailed(e.toString());
+							finish();
 						}
-
-						finish();
 					}
 				})
 				.addOnCanceledListener(new OnCanceledListener() {
@@ -117,7 +92,7 @@ public class LocationHelperActivity extends Activity {
 
 	@NonNull
 	private Intent createIntent(Context context) {
-		Intent intent =  new Intent(context.getApplicationContext(), NinevaLocationService.class);
+		Intent intent = new Intent(context.getApplicationContext(), NinevaLocationService.class);
 		intent.putExtra(EXTRA_LOCATION_REQUEST, locationRequest);
 		intent.putExtra(EXTRA_NOTIFICATION_DATA, notificationData);
 		return intent;
@@ -126,14 +101,44 @@ public class LocationHelperActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-
+		Log.d(TAG, "onActivityResult -> start");
 		if (resultCode == RESULT_OK) {
 			requestBackgroundLocationUpdates();
+			UnityCallbacks.onPermissionGranted();
+			finish();
 			Log.d(TAG, "onActivityResult -> OK");
 		} else {
 			Log.d(TAG, "onActivityResult -> else");
 		}
+	}
 
-		finish();
+	private LocationSettingsRequest createLocationRequest(Intent intent) {
+		long interval = intent.getLongExtra(EXTRA_REQUEST_INTERVAL, 600 * 1000L);
+		long fastestInterval = intent.getLongExtra(EXTRA_REQUEST_FASTEST_INTERVAL, 300 * 1000L);
+		int priority = intent.getIntExtra(EXTRA_REQUEST_PRIORITY, LocationRequest.PRIORITY_NO_POWER);
+		long maxWaitTime = intent.getLongExtra(EXTRA_REQUEST_MAX_WAIT_TIME, 6000 * 1000L);
+
+		locationRequest = new LocationRequest();
+		locationRequest.setInterval(interval);
+		locationRequest.setFastestInterval(fastestInterval);
+		locationRequest.setPriority(priority);
+		locationRequest.setMaxWaitTime(maxWaitTime);
+
+		Log.d("LocationRequest: ", locationRequest.toString());
+
+		LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+		builder.addLocationRequest(locationRequest);
+		builder.setAlwaysShow(true);
+		return builder.build();
+	}
+
+	private void createNotificationData(Intent intent) {
+		notificationData = new NotificationData();
+		notificationData.title = intent.getStringExtra(EXTRA_NOTIFICATION_TITLE);
+		notificationData.content = intent.getStringExtra(EXTRA_NOTIFICATION_CONTENT);
+		notificationData.visibility = intent.getIntExtra(EXTRA_NOTIFICATION_VISIBILITY, 0);
+		notificationData.importance = intent.getIntExtra(EXTRA_NOTIFICATION_IMPORTANCE, 3);
+		notificationData.hasStopServiceAction = intent.getBooleanExtra(EXTRA_NOTIFICATION_HAS_STOP_SERVICE_ACTION, true);
+		notificationData.stopServiceActionTitle = intent.getStringExtra(EXTRA_NOTIFICATION_STOP_SERVICE_ACTION_NAME);
 	}
 }
