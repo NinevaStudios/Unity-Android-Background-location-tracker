@@ -67,12 +67,6 @@ public class NinevaLocationService extends Service {
 		} else {
 			locationRequest = intent.getParcelableExtra(LocationHelperActivity.EXTRA_LOCATION_REQUEST);
 			notificationData = intent.getParcelableExtra(LocationHelperActivity.EXTRA_NOTIFICATION_DATA);
-			Log.d(TAG, "Notification Data - title" + notificationData.title);
-			Log.d(TAG, "Notification Data - content " + notificationData.content);
-			Log.d(TAG, "Notification Data - visibility " + notificationData.visibility);
-			Log.d(TAG, "Notification Data - importance " + notificationData.importance);
-			Log.d(TAG, "Notification Data - hasStopServiceAction " + notificationData.hasStopServiceAction);
-			Log.d(TAG, "Notification Data - stopServiceActionTitle " + notificationData.stopServiceActionTitle);
 			createForegroundNotification();
 			init();
 		}
@@ -195,12 +189,9 @@ public class NinevaLocationService extends Service {
 		Intent openAppIntent = pm.getLaunchIntentForPackage(getPackageName());
 
 		if (openAppIntent != null) {
-			Log.d(TAG, "Application Intent is not null");
 			openAppIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
 			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, openAppIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 			builder.setContentIntent(contentIntent);
-		} else {
-			Log.d(TAG, "Application Intent is null");
 		}
 
 		Notification notification = builder.build();
