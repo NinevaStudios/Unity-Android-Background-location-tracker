@@ -2,6 +2,9 @@ using JetBrains.Annotations;
 
 namespace LocationTracking.Scripts
 {
+	/// <summary>
+	/// Entity for creating a location tracking request
+	/// </summary>
 	[PublicAPI]
 	public class LocationRequest
 	{
