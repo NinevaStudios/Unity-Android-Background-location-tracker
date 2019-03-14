@@ -45,13 +45,35 @@ namespace LocationTracking.Scripts
 			High = 4
 		}
 		
+		/// <summary>
+		/// Notification title
+		/// </summary>
 		public string title;
+		/// <summary>
+		/// Notification content text
+		/// </summary>
 		public string content;
+		/// <summary>
+		/// Notification lock screen visibility
+		/// </summary>
 		public Visibility visibility;
+		/// <summary>
+		/// Notification importance
+		/// </summary>
 		public Importance importance;
+		/// <summary>
+		/// Whether notification has a button to stop the service
+		/// </summary>
 		public bool hasStopServiceAction;
+		/// <summary>
+		/// Stop service button text
+		/// </summary>
 		public string stopServiceActionName;
 
+		/// <summary>
+		/// Create a notification with default settings
+		/// </summary>
+		/// <returns></returns>
 		public static Notification DefaultNotification()
 		{
 			return new Notification

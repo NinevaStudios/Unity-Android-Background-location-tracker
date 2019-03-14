@@ -31,15 +31,13 @@ namespace LocationTracking.Scripts
 			NoPower = 105
 		}
 
-		// TODO remove docs from private fields
-
 		/// <summary>
-		/// Interval at which location is computed for your app.
+		/// Interval at which location is computed for your app (in milliseconds).
 		/// </summary>
 		public long Interval { get; private set; }
 
 		/// <summary>
-		/// The interval at which location computed for other apps is delivered to your app.
+		/// The interval at which location computed for other apps is delivered to your app (in milliseconds).
 		/// </summary>
 		public long FastestInterval { get; private set; }
 
@@ -49,12 +47,18 @@ namespace LocationTracking.Scripts
 		public TrackingPriority Priority { get; private set; }
 
 		/// <summary>
-		/// Latency of location delivery. Typically a value that is several times larger than the <see cref="Interval"/>.
+		/// Latency of location delivery (in milliseconds). Typically a value that is several times larger than the <see cref="Interval"/>.
 		/// This setting delays location delivery, and multiple location updates may be delivered in batches.
 		/// </summary>
 		public long MaxWaitTime { get; private set; }
 
-		// TODO document
+		/// <summary>
+		/// Create a location tracking request with given parameters
+		/// </summary>
+		/// <param name="interval"><see cref="Interval"/></param>
+		/// <param name="fastestInterval"><see cref="FastestInterval"/></param>
+		/// <param name="trackingPriority"><see cref="Priority"/></param>
+		/// <param name="maxWaitTime"><see cref="MaxWaitTime"/></param>
 		public LocationRequest(long interval, long fastestInterval, TrackingPriority trackingPriority, long maxWaitTime)
 		{
 			Interval = interval;
@@ -63,15 +67,15 @@ namespace LocationTracking.Scripts
 			MaxWaitTime = maxWaitTime;
 		}
 
+		/// <summary>
+		/// Create a location tracking request with default parameters
+		/// </summary>
 		public LocationRequest()
 		{
-			// TODO come up with reasonable defaults
-			Interval = 0;
-			FastestInterval = 0;
+			Interval = 30 * 1000L;
+			FastestInterval = 30 * 1000L;
 			Priority = TrackingPriority.BalancedPowerAccuracy;
-			MaxWaitTime = 0;
+			MaxWaitTime = 300 * 1000L;
 		}
-		
-		
 	}
 }
