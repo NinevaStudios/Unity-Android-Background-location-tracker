@@ -1,7 +1,6 @@
 package com.ninevastudios.locationtracker;
 
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -31,7 +30,6 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 @Keep
 public class NinevaLocationService extends Service {
@@ -43,6 +41,7 @@ public class NinevaLocationService extends Service {
 	private FusedLocationProviderClient fusedLocationClient;
 	private LocationCallback locationCallback;
 	private LocationRequest locationRequest;
+	private NotificationData notificationData;
 
 	@Override
 	public void onCreate() {
@@ -64,6 +63,13 @@ public class NinevaLocationService extends Service {
 			stopService(stopIntent);
 		} else {
 			locationRequest = intent.getParcelableExtra(LocationHelperActivity.EXTRA_LOCATION_REQUEST);
+			notificationData = intent.getParcelableExtra(LocationHelperActivity.EXTRA_NOTIFICATION_DATA);
+			Log.d(TAG, "Notification Data - title" + notificationData.title);
+			Log.d(TAG, "Notification Data - content " + notificationData.content);
+			Log.d(TAG, "Notification Data - visibility " + notificationData.visibility);
+			Log.d(TAG, "Notification Data - importance " + notificationData.importance);
+			Log.d(TAG, "Notification Data - hasStopServiceAction " + notificationData.hasStopServiceAction);
+			Log.d(TAG, "Notification Data - stopServiceActionTitle " + notificationData.stopServiceActionTitle);
 			createForegroundNotification();
 			init();
 		}
@@ -154,31 +160,33 @@ public class NinevaLocationService extends Service {
 	}
 
 	private void createForegroundNotification() {
-		String CHANNEL_ID = "channel_location";
-		String CHANNEL_NAME = "channel_location";
+		String CHANNEL_ID = "channel_location_id";
+		String CHANNEL_NAME = "channel_location_name";
 
 		NotificationCompat.Builder builder;
 		NotificationManager notificationManager = (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-			NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, NotificationManager.IMPORTANCE_DEFAULT);
-			channel.setLockscreenVisibility(Notification.VISIBILITY_PRIVATE);
+			NotificationChannel channel = new NotificationChannel(CHANNEL_ID, CHANNEL_NAME, notificationData.importance);
+			channel.setLockscreenVisibility(notificationData.visibility);
 
 			notificationManager.createNotificationChannel(channel);
 			builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID);
 			builder.setBadgeIconType(NotificationCompat.BADGE_ICON_NONE);
-			builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
+			//builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
 		} else {
 			builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID);
 		}
 
-		builder.setContentTitle("Your title");
-		builder.setContentText("You are now online");
-		//builder.setSmallIcon(R.drawable.common_google_signin_btn_icon_dark);
+		builder.setContentTitle(notificationData.title);
+		builder.setContentText(notificationData.content);
+		builder.setSmallIcon(R.drawable.common_google_signin_btn_icon_dark);
 
-		Intent intentHide = new Intent(this, NinevaLocationService.class);
-		intentHide.setAction(ACTION_STOP);
-		PendingIntent hide = PendingIntent.getService(this, 0, intentHide, 0);
-		builder.addAction(0, "Stop service", hide);
+		if (notificationData.hasStopServiceAction) {
+			Intent intentHide = new Intent(this, NinevaLocationService.class);
+			intentHide.setAction(ACTION_STOP);
+			PendingIntent hide = PendingIntent.getService(this, 0, intentHide, 0);
+			builder.addAction(0, notificationData.stopServiceActionTitle, hide);
+		}
 
 		// TODO start the app
 //		builder.setContentIntent(pendingIntent);

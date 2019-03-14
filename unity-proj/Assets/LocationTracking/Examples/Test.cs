@@ -19,6 +19,7 @@ public class Test : MonoBehaviour
 		var request = new LocationRequest(interval, fastestInterval, priority, maxWaitTime);
 
 		var options = new TrackingOptions(request);
+		options.SetNotification(Notification.DefaultNotification());
 
 		LocationTracker.StartLocationTracking(options, location =>
 		{

@@ -28,9 +28,17 @@ public class LocationHelperActivity extends Activity {
 	static final String EXTRA_REQUEST_FASTEST_INTERVAL = "com.ninevastudios.locationtracker.RequestFastestInterval";
 	static final String EXTRA_REQUEST_PRIORITY = "com.ninevastudios.locationtracker.RequestPriority";
 	static final String EXTRA_REQUEST_MAX_WAIT_TIME = "com.ninevastudios.locationtracker.RequestMaxWaitTime";
+	static final String EXTRA_NOTIFICATION_TITLE = "com.ninevastudios.locationtracker.NotificationTitle";
+	static final String EXTRA_NOTIFICATION_CONTENT = "com.ninevastudios.locationtracker.NotificationContent";
+	static final String EXTRA_NOTIFICATION_VISIBILITY = "com.ninevastudios.locationtracker.NotificationVisibility";
+	static final String EXTRA_NOTIFICATION_IMPORTANCE = "com.ninevastudios.locationtracker.NotificationImportance";
+	static final String EXTRA_NOTIFICATION_HAS_STOP_SERVICE_ACTION = "com.ninevastudios.locationtracker.NotificationHasStopServiceAction";
+	static final String EXTRA_NOTIFICATION_STOP_SERVICE_ACTION_NAME = "com.ninevastudios.locationtracker.NotificationStopServiceActionName";
 	public static final String EXTRA_LOCATION_REQUEST = "com.ninevastudios.locationtracker.LocationRequest";
+	public static final String EXTRA_NOTIFICATION_DATA = "com.ninevastudios.locationtracker.NotificationData";
 
 	private LocationRequest locationRequest;
+	private NotificationData notificationData;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -38,10 +46,12 @@ public class LocationHelperActivity extends Activity {
 
 		SettingsClient settingsClient = LocationServices.getSettingsClient(this);
 
-		long interval = getIntent().getLongExtra(EXTRA_REQUEST_INTERVAL, 600 * 1000L);
-		long fastestInterval = getIntent().getLongExtra(EXTRA_REQUEST_FASTEST_INTERVAL,300 * 1000L);
-		int priority = getIntent().getIntExtra(EXTRA_REQUEST_PRIORITY, LocationRequest.PRIORITY_NO_POWER);
-		long maxWaitTime = getIntent().getLongExtra(EXTRA_REQUEST_MAX_WAIT_TIME, 6000 * 1000L);
+		Intent intent = getIntent();
+
+		long interval = intent.getLongExtra(EXTRA_REQUEST_INTERVAL, 600 * 1000L);
+		long fastestInterval = intent.getLongExtra(EXTRA_REQUEST_FASTEST_INTERVAL,300 * 1000L);
+		int priority = intent.getIntExtra(EXTRA_REQUEST_PRIORITY, LocationRequest.PRIORITY_NO_POWER);
+		long maxWaitTime = intent.getLongExtra(EXTRA_REQUEST_MAX_WAIT_TIME, 6000 * 1000L);
 
 		locationRequest = new LocationRequest();
 		locationRequest.setInterval(interval);
@@ -55,6 +65,14 @@ public class LocationHelperActivity extends Activity {
 		builder.addLocationRequest(locationRequest);
 		builder.setAlwaysShow(true);
 		LocationSettingsRequest locationSettingsRequest = builder.build();
+
+		notificationData = new NotificationData();
+		notificationData.title = intent.getStringExtra(EXTRA_NOTIFICATION_TITLE);
+		notificationData.content = intent.getStringExtra(EXTRA_NOTIFICATION_CONTENT);
+		notificationData.visibility = intent.getIntExtra(EXTRA_NOTIFICATION_VISIBILITY, 0);
+		notificationData.importance = intent.getIntExtra(EXTRA_NOTIFICATION_IMPORTANCE, 3);
+		notificationData.hasStopServiceAction = intent.getBooleanExtra(EXTRA_NOTIFICATION_HAS_STOP_SERVICE_ACTION, true);
+		notificationData.stopServiceActionTitle = intent.getStringExtra(EXTRA_NOTIFICATION_STOP_SERVICE_ACTION_NAME);
 
 		settingsClient
 				.checkLocationSettings(locationSettingsRequest)
@@ -102,6 +120,7 @@ public class LocationHelperActivity extends Activity {
 	private Intent createIntent(Context context) {
 		Intent intent =  new Intent(context.getApplicationContext(), NinevaLocationService.class);
 		intent.putExtra(EXTRA_LOCATION_REQUEST, locationRequest);
+		intent.putExtra(EXTRA_NOTIFICATION_DATA, notificationData);
 		return intent;
 	}
 
