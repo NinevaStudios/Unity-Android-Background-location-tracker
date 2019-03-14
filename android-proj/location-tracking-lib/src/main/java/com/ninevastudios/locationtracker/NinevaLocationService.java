@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
@@ -30,6 +31,8 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
+
+import static android.support.v4.app.NotificationCompat.FLAG_AUTO_CANCEL;
 
 @Keep
 public class NinevaLocationService extends Service {
@@ -172,7 +175,7 @@ public class NinevaLocationService extends Service {
 			notificationManager.createNotificationChannel(channel);
 			builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID);
 			builder.setBadgeIconType(NotificationCompat.BADGE_ICON_NONE);
-			//builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
+			builder.setCategory(NotificationCompat.CATEGORY_SERVICE);
 		} else {
 			builder = new NotificationCompat.Builder(getApplicationContext(), CHANNEL_ID);
 		}
@@ -188,8 +191,18 @@ public class NinevaLocationService extends Service {
 			builder.addAction(0, notificationData.stopServiceActionTitle, hide);
 		}
 
-		// TODO start the app
-//		builder.setContentIntent(pendingIntent);
+		PackageManager pm = this.getPackageManager();
+		Intent openAppIntent = pm.getLaunchIntentForPackage(getPackageName());
+
+		if (openAppIntent != null) {
+			Log.d(TAG, "Application Intent is not null");
+			openAppIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+			PendingIntent contentIntent = PendingIntent.getActivity(this, 0, openAppIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+			builder.setContentIntent(contentIntent);
+		} else {
+			Log.d(TAG, "Application Intent is null");
+		}
+
 		Notification notification = builder.build();
 		startForeground(101, notification);
 	}
