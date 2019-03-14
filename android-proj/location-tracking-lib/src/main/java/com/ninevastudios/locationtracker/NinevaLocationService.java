@@ -1,6 +1,8 @@
 package com.ninevastudios.locationtracker;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -15,6 +17,7 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 import android.util.Log;
@@ -32,8 +35,6 @@ import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 
-import static android.support.v4.app.NotificationCompat.FLAG_AUTO_CANCEL;
-
 @Keep
 public class NinevaLocationService extends Service {
 
@@ -45,6 +46,7 @@ public class NinevaLocationService extends Service {
 	private LocationCallback locationCallback;
 	private LocationRequest locationRequest;
 	private NotificationData notificationData;
+	private Notification notification;
 
 	@Override
 	public void onCreate() {
@@ -75,8 +77,11 @@ public class NinevaLocationService extends Service {
 	}
 
 	private void init() {
-		fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-
+		if (RequestPermissionActivity.hasLocationPermission(this.getApplicationContext())) {
+			fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+		} else {
+			startRequestPermissionActivity();
+		}
 		locationCallback = new LocationCallback() {
 			@Override
 			public void onLocationResult(LocationResult locationResult) {
@@ -85,7 +90,6 @@ public class NinevaLocationService extends Service {
 				Location location = locationResult.getLastLocation();
 				UnityCallbacks.onLocationReceived(JsonUtil.serialize(location));
 
-				// TODO save location to sqlite db
 				DbHelper.getInstance(getApplicationContext()).saveLocation(location);
 
 				Log.d(TAG, "Location Received " + locationResult);
@@ -108,13 +112,13 @@ public class NinevaLocationService extends Service {
 				.addOnFailureListener(new OnFailureListener() {
 					@Override
 					public void onFailure(@NonNull Exception e) {
-						Log.d(TAG, "checkLocationSettings -> onFailure");
+						UnityCallbacks.onCheckLocationSettingsFailed(e.toString());
 					}
 				})
 				.addOnCanceledListener(new OnCanceledListener() {
 					@Override
 					public void onCanceled() {
-						Log.d(TAG, "checkLocationSettings -> onCanceled");
+						UnityCallbacks.onCheckLocationSettingsCancelled();
 					}
 				});
 	}
@@ -139,9 +143,18 @@ public class NinevaLocationService extends Service {
 	private void requestLocationUpdates() {
 		if (RequestPermissionActivity.hasLocationPermission(this.getApplicationContext())) {
 			fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.myLooper());
+			startForeground(101, notification);
 		} else {
-			Log.e(TAG, "You must request location permissions before requesting location updates");
+			startRequestPermissionActivity();
 		}
+	}
+
+	private void startRequestPermissionActivity()
+	{
+		Intent requestPermissionIntent = new Intent(this, RequestPermissionActivity.class);
+		requestPermissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		startActivity(requestPermissionIntent);
+		stopSelf();
 	}
 
 	@Override
@@ -194,7 +207,6 @@ public class NinevaLocationService extends Service {
 			builder.setContentIntent(contentIntent);
 		}
 
-		Notification notification = builder.build();
-		startForeground(101, notification);
+		notification = builder.build();
 	}
 }

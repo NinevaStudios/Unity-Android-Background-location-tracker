@@ -27,15 +27,24 @@ namespace LocationTracking.Scripts
 
 		static Action<Location> _onLocationReceived;
 		static Action<string> _onServiceStopped;
+		static Action<string> _onError;
+		static TrackingOptions _options;
 
-		public static void StartLocationTracking([NotNull] TrackingOptions options, Action<Location> onLocationReceived, Action<string> onError = null)
+		public static void StartLocationTracking([NotNull] TrackingOptions options, [NotNull] Action<Location> onLocationReceived, Action<string> onError = null)
 		{
 			if (options == null)
 			{
 				throw new ArgumentNullException("options");
 			}
+			
+			if (onLocationReceived == null)
+			{
+				throw new ArgumentNullException("onLocationReceived");
+			}
 
+			_options = options;
 			_onLocationReceived = onLocationReceived;
+			_onError = onError;
 
 			var intent = GetIntent(options);
 
@@ -121,6 +130,22 @@ namespace LocationTracking.Scripts
 			if (_onServiceStopped != null)
 			{
 				_onServiceStopped(message);
+			}
+		}
+
+		public static void OnPermissionGranted()
+		{
+			if (_options != null && _onLocationReceived != null)
+			{
+				StartLocationTracking(_options, _onLocationReceived, _onError);
+			}
+		}
+
+		public static void OnError(string message)
+		{
+			if (_onError != null)
+			{
+				_onError(message);
 			}
 		}
 	}

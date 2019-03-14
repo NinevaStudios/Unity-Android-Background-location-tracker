@@ -22,7 +22,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 public class LocationHelperActivity extends Activity {
 	private static final String TAG = LocationHelperActivity.class.getSimpleName();
 	
-	private static final int REQUEST_CHECK_SETTINGS = 666;
+	public static final int REQUEST_CHECK_SETTINGS = 666;
 	public static final String EXTRA_EXCEPTION = "exception";
 	static final String EXTRA_REQUEST_INTERVAL = "com.ninevastudios.locationtracker.RequestInterval";
 	static final String EXTRA_REQUEST_FASTEST_INTERVAL = "com.ninevastudios.locationtracker.RequestFastestInterval";
@@ -80,7 +80,7 @@ public class LocationHelperActivity extends Activity {
 					@Override
 					public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
 						requestBackgroundLocationUpdates();
-						Log.d(TAG, "onSuccess -> onSuccess");
+						UnityCallbacks.onCheckLocationSettingsSuccess();
 						finish();
 					}
 				})
@@ -92,10 +92,10 @@ public class LocationHelperActivity extends Activity {
 								ResolvableApiException resolvable = (ResolvableApiException) e;
 								resolvable.startResolutionForResult(LocationHelperActivity.this, REQUEST_CHECK_SETTINGS);
 							} catch (IntentSender.SendIntentException sendEx) {
-								UnityCallbacks.onCheckLocationSettingsFailed();
+								UnityCallbacks.onCheckLocationSettingsFailed(sendEx.toString());
 							}
 						} else {
-							UnityCallbacks.onCheckLocationSettingsFailed();
+							UnityCallbacks.onCheckLocationSettingsFailed(e.toString());
 						}
 
 						finish();
@@ -104,7 +104,7 @@ public class LocationHelperActivity extends Activity {
 				.addOnCanceledListener(new OnCanceledListener() {
 					@Override
 					public void onCanceled() {
-						Log.d(TAG, "checkLocationSettings -> onCanceled");
+						UnityCallbacks.onCheckLocationSettingsCancelled();
 						finish();
 					}
 				});
@@ -113,7 +113,6 @@ public class LocationHelperActivity extends Activity {
 	@Keep
 	public void requestBackgroundLocationUpdates() {
 		this.startService(createIntent(this));
-		UnityCallbacks.onCheckLocationSettingsSuccess();
 	}
 
 	@NonNull

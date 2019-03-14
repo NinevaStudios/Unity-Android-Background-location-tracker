@@ -24,6 +24,7 @@ namespace LocationTracking.Internal
 				{
 					Init();
 				}
+
 				return _instance;
 			}
 		}
@@ -117,6 +118,26 @@ namespace LocationTracking.Internal
 		public void OnServiceStopped(string message)
 		{
 			LocationTracker.OnServiceStopped(message);
+		}
+
+		public void OnPermissionGranted(string message)
+		{
+			LocationTracker.OnPermissionGranted();
+		}
+
+		public void OnCheckLocationSettingsCancelled(string message)
+		{
+			LocationTracker.OnError(message);
+		}
+
+		public void OnCheckLocationSettingsFailed(string message)
+		{
+			LocationTracker.OnError(message);
+		}
+
+		public void OnPermissionDenied(string message)
+		{
+			LocationTracker.OnError(message);
 		}
 	}
 }
