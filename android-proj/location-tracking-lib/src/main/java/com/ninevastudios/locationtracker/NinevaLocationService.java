@@ -30,7 +30,7 @@ import com.google.android.gms.tasks.OnCanceledListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 
-import java.util.ArrayList;
+import java.util.List;
 
 @Keep
 public class NinevaLocationService extends Service {
@@ -127,7 +127,7 @@ public class NinevaLocationService extends Service {
 
 	@Keep
 	public static String getAllLocations(Context context) {
-		ArrayList<String> locationsArray = DbHelper.getInstance(context.getApplicationContext()).getAllLocations();
+		List<String> locationsArray = DbHelper.getInstance(context.getApplicationContext()).getAllLocations();
 		return TextUtils.join(";", locationsArray);
 	}
 
@@ -146,8 +146,7 @@ public class NinevaLocationService extends Service {
 		}
 	}
 
-	private void startRequestPermissionActivity()
-	{
+	private void startRequestPermissionActivity() {
 		Intent requestPermissionIntent = new Intent(this, RequestPermissionActivity.class);
 		requestPermissionIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 		startActivity(requestPermissionIntent);

@@ -10,10 +10,8 @@ import android.location.Location;
 import android.support.annotation.Keep;
 import android.util.Log;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
+import java.util.List;
 
 @Keep
 public class DbHelper extends SQLiteOpenHelper {
@@ -45,6 +43,7 @@ public class DbHelper extends SQLiteOpenHelper {
 	@Override
 	public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 		Log.w(DbHelper.class.getName(), "Upgrading database from version " + oldVersion + " to " + newVersion);
+		// TODO be consistent with query uppercase-lowercase!
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
 		onCreate(db);
 	}
@@ -56,29 +55,27 @@ public class DbHelper extends SQLiteOpenHelper {
 		db.insert(TABLE_NAME, null, values);
 	}
 
-	public int numberOfRows(){
+	public int numberOfRows() {
 		SQLiteDatabase db = getReadableDatabase();
-		int result = (int) DatabaseUtils.queryNumEntries(db, TABLE_NAME);
-		return result;
+		return (int) DatabaseUtils.queryNumEntries(db, TABLE_NAME);
 	}
 
-	public ArrayList<String> getAllLocations() {
-		ArrayList<String> array_list = new ArrayList<>();
+	public List<String> getAllLocations() {
+		ArrayList<String> result = new ArrayList<>();
 		SQLiteDatabase db = getReadableDatabase();
-		Cursor res =  db.rawQuery( "select * from " + TABLE_NAME, null );
+		Cursor res = db.rawQuery("select * from " + TABLE_NAME, null);
 		res.moveToFirst();
 
-		while(!res.isAfterLast()){
-			array_list.add(res.getString(res.getColumnIndex(COLUMN_NAME)));
+		while (!res.isAfterLast()) {
+			result.add(res.getString(res.getColumnIndex(COLUMN_NAME)));
 			res.moveToNext();
 		}
 
 		res.close();
-		return array_list;
+		return result;
 	}
 
-	public void deleteAllEntries()
-	{
+	public void deleteAllEntries() {
 		SQLiteDatabase db = getWritableDatabase();
 		db.delete(TABLE_NAME, null, null);
 	}

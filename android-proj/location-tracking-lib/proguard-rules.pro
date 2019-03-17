@@ -16,6 +16,6 @@
 #   public *;
 #}
 
--keep public class com.deadmosquitogames.gmaps.** {
+-keep public class com.ninevastudios.** {
   public protected *;
 }

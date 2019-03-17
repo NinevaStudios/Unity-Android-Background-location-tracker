@@ -6,6 +6,7 @@ using MiniJSON;
 
 namespace LocationTracking.Scripts
 {
+	// TODO class docs
 	[PublicAPI]
 	public class Location
 	{
@@ -38,6 +39,7 @@ namespace LocationTracking.Scripts
 		public float speed;
 		public long time;
 
+		// TODO convert these to properties and copy the documentation from android docs properly
 		/// <summary>
 		/// API level 17
 		/// </summary>
@@ -90,6 +92,7 @@ namespace LocationTracking.Scripts
 			longitude = dic.GetDouble(Lng);
 
 			hasAccuracy = dic.GetBool(HasAccuracy);
+			// TODO always use curly braces even if there is only one statement!
 			if (hasAccuracy) accuracy = dic.GetFloat(Accuracy);
 
 			hasAltitude = dic.GetBool(HasAltitude);
