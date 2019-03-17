@@ -18,6 +18,7 @@ namespace LocationTracking.Scripts
 		/// </summary>
 		public Notification Notification { get; private set; }
 
+		// TODO docs
 		public bool TrackInBackground { get; private set; }
 
 		public TrackingOptions([NotNull] LocationRequest request)

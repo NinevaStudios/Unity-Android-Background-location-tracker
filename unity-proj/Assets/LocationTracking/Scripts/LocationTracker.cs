@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace LocationTracking.Scripts
 {
+	// TODO document each class and menthod!
 	[PublicAPI]
 	public static class LocationTracker
 	{
@@ -15,7 +16,7 @@ namespace LocationTracking.Scripts
 		const string ExtraRequestFastestInterval = "com.ninevastudios.locationtracker.RequestFastestInterval";
 		const string ExtraRequestPriority = "com.ninevastudios.locationtracker.RequestPriority";
 		const string ExtraRequestMaxWaitTime = "com.ninevastudios.locationtracker.RequestMaxWaitTime";
-		
+
 		const string ExtraNotificationTitle = "com.ninevastudios.locationtracker.NotificationTitle";
 		const string ExtraNotificationContent = "com.ninevastudios.locationtracker.NotificationContent";
 		const string ExtraNotificationVisibility = "com.ninevastudios.locationtracker.NotificationVisibility";
@@ -24,19 +25,28 @@ namespace LocationTracking.Scripts
 		const string ExtraNotificationStopServiceActionName = "com.ninevastudios.locationtracker.NotificationStopServiceActionName";
 
 		const string ServiceClassName = "com.ninevastudios.locationtracker.NinevaLocationService";
+		const string LocationHelperActivityClass = "com.ninevastudios.locationtracker.LocationHelperActivity";
 
 		static Action<Location> _onLocationReceived;
 		static Action<string> _onServiceStopped;
-		static Action<string> _onError;
+		static Action<ErrorCode> _onError;
 		static TrackingOptions _options;
 
-		public static void StartLocationTracking([NotNull] TrackingOptions options, [NotNull] Action<Location> onLocationReceived, Action<string> onError = null)
+		public enum ErrorCode
+		{
+			LocationPermissionNotGranted = 1,
+			LocationDisabled = 2
+		}
+
+		// TODO make it work correctly with error codes (ErrorCode)
+		// TODO document, explain how foreground and background works
+		public static void StartLocationTracking([NotNull] TrackingOptions options, [NotNull] Action<Location> onLocationReceived, Action<ErrorCode> onError = null)
 		{
 			if (options == null)
 			{
 				throw new ArgumentNullException("options");
 			}
-			
+
 			if (onLocationReceived == null)
 			{
 				throw new ArgumentNullException("onLocationReceived");
@@ -53,7 +63,7 @@ namespace LocationTracking.Scripts
 
 		static AndroidIntent GetIntent(TrackingOptions options)
 		{
-			var intent = new AndroidIntent(Utils.ClassForName("com.ninevastudios.locationtracker.LocationHelperActivity"));
+			var intent = new AndroidIntent(Utils.ClassForName(LocationHelperActivityClass));
 			intent.SetFlags(AndroidIntent.Flags.ActivityNewTask | AndroidIntent.Flags.ActivityClearTask);
 
 			var request = options.Request;
@@ -69,7 +79,7 @@ namespace LocationTracking.Scripts
 			intent.PutExtra(ExtraNotificationVisibility, (int) notification.visibility);
 			intent.PutExtra(ExtraNotificationHasStopServiceAction, notification.hasStopServiceAction);
 			intent.PutExtra(ExtraNotificationStopServiceActionName, notification.stopServiceActionName);
-			
+
 			return intent;
 		}
 
@@ -117,6 +127,7 @@ namespace LocationTracking.Scripts
 			JavaExtensions.CallBool(Utils.Activity, "stopService", new AndroidIntent(new AndroidJavaClass(ServiceClassName)).AJO);
 		}
 
+		// TODO we need to not have this pubic methods here like this because user will confuse them with the API
 		public static void OnLocationReceived(Location location)
 		{
 			if (_onLocationReceived != null)
@@ -145,7 +156,8 @@ namespace LocationTracking.Scripts
 		{
 			if (_onError != null)
 			{
-				_onError(message);
+				// TODO fix with error code
+				_onError((ErrorCode) int.Parse(message));
 			}
 		}
 	}

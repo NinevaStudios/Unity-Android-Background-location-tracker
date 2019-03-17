@@ -26,10 +26,7 @@ public class Test : MonoBehaviour
 			locationText.horizontalOverflow = HorizontalWrapMode.Wrap;
 			locationText.text = ++_ticks + ". " + location.ToString() + "\n";
 			numberText.text = LocationTracker.SavedLocationsCount.ToString();
-		}, errorMessage =>
-		{
-			Debug.Log(errorMessage);
-		});
+		}, errorMessage => { Debug.Log(errorMessage); });
 	}
 
 	[UsedImplicitly]
