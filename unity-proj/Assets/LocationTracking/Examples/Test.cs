@@ -21,7 +21,7 @@ public class Test : MonoBehaviour
 
 		var options = new BackgroundTrackingOptions(request, new Notification());
 
-		LocationTracker.StartLocationTrackingBackground(options, location =>
+		LocationTracker.StartBackgroundLocationTracking(options, location =>
 		{
 			locationText.horizontalOverflow = HorizontalWrapMode.Wrap;
 			locationText.text = ++_ticks + ". " + location.ToString() + "\n";

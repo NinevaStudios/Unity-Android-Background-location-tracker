@@ -49,7 +49,7 @@ namespace LocationTracking.Scripts
 
 		// TODO make it work correctly with error codes (ErrorCode)
 		// TODO document, explain how foreground and background works
-		public static void StartLocationTrackingBackground([NotNull] BackgroundTrackingOptions options, [NotNull] Action<Location> onLocationReceived, Action<ErrorCode> onError = null)
+		public static void StartBackgroundLocationTracking([NotNull] BackgroundTrackingOptions options, [NotNull] Action<Location> onLocationReceived, Action<ErrorCode> onError = null)
 		{
 			if (options == null)
 			{
@@ -157,7 +157,7 @@ namespace LocationTracking.Scripts
 		{
 			if (_options != null && _onLocationReceived != null)
 			{
-				StartLocationTrackingBackground(_options, _onLocationReceived, _onError);
+				StartBackgroundLocationTracking(_options, _onLocationReceived, _onError);
 			}
 		}
 
