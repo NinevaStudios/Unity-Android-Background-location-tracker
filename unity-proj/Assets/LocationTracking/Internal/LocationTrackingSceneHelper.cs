@@ -1,4 +1,5 @@
-﻿using LocationTracking.Scripts;
+﻿using JetBrains.Annotations;
+using LocationTracking.Scripts;
 
 #if UNITY_ANDROID
 namespace LocationTracking.Internal
@@ -110,21 +111,25 @@ namespace LocationTracking.Internal
 			}
 		}
 
+		[UsedImplicitly]
 		public void OnLocationReceived(string locationJson)
 		{
 			LocationTracker.OnLocationReceived(new Location(locationJson));
 		}
 
+		[UsedImplicitly]
 		public void OnCheckLocationSettingsCancelled(string message)
 		{
 			LocationTracker.OnError(LocationTracker.ErrorCode.UserCancelled);
 		}
 
+		[UsedImplicitly]
 		public void OnCheckLocationSettingsFailed(string message)
 		{
 			LocationTracker.OnError(LocationTracker.ErrorCode.LocationDisabled);
 		}
 
+		[UsedImplicitly]
 		public void OnPermissionDenied(string message)
 		{
 			LocationTracker.OnError(LocationTracker.ErrorCode.LocationPermissionNotGranted);

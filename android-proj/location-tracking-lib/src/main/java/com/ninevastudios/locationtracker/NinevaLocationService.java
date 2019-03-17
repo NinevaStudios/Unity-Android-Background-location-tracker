@@ -13,7 +13,6 @@ import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
-import android.os.Parcelable;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
@@ -85,7 +84,7 @@ public class NinevaLocationService extends Service {
 				super.onLocationResult(locationResult);
 
 				Location location = locationResult.getLastLocation();
-				UnityCallbacks.onLocationReceived(JsonUtil.serialize(location));
+				UnityCallbacks.onLocationReceived(JsonUtil.serializeLocation(location));
 
 				DbHelper.getInstance(getApplicationContext()).saveLocation(location);
 

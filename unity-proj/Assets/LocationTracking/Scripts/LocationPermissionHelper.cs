@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using JetBrains.Annotations;
 using LocationTracking.Internal;
+using UnityEngine;
 
 namespace LocationTracking.Scripts
 {
@@ -11,6 +12,10 @@ namespace LocationTracking.Scripts
 	[PublicAPI]
 	public class LocationPermissionHelper
 	{
+		const string RequestPermissionActivityClass = "com.nineva.studios.locationtracker.RequestPermissionActivity";
+		const int PERMISSION_GRANTED = 0;
+		const int PERMISSION_DENIED = -1;
+		
 		/// <summary>
 		/// Permission request result.
 		/// </summary>
@@ -62,8 +67,6 @@ namespace LocationTracking.Scripts
 			}
 		}
 
-		const int PERMISSION_GRANTED = 0;
-		const int PERMISSION_DENIED = -1;
 
 		/// <summary>
 		/// Permission status
@@ -82,24 +85,31 @@ namespace LocationTracking.Scripts
 			[PublicAPI] Denied = PERMISSION_DENIED
 		}
 
+		/// <summary>
+		/// Returns whether the location permission has been granted
+		/// </summary>
 		public static bool IsLocationPermissionGranted
 		{
 			get
 			{
-				// TODO implement
-
-				return false;
+				return new AndroidJavaClass(RequestPermissionActivityClass).CallStatic<bool>("hasLocationPermission");
 			}
 		}
 
-
 		// TODO implement similarly as in Android goodies
-		public static void RequestLocationPermission([NotNull] Action<PermissionRequestResult> onRequestPermissionResult)
+		public static void RequestLocationPermission([NotNull] Action<PermissionRequestResult> onRequestPermissionResult, bool isFineLocation = true)
 		{
 			if (onRequestPermissionResult == null)
 			{
 				throw new ArgumentNullException("onRequestPermissionResult");
 			}
+			
+			new AndroidJavaClass(RequestPermissionActivityClass).CallStatic("requestPermissions", isFineLocation);
+		}
+
+		public static void InternalOnPermissionResult()
+		{
+			// TODO
 		}
 	}
 }

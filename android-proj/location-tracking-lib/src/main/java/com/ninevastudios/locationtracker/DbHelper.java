@@ -50,7 +50,7 @@ public class DbHelper extends SQLiteOpenHelper {
 
 	public void saveLocation(Location location) {
 		ContentValues values = new ContentValues();
-		values.put(COLUMN_NAME, JsonUtil.serialize(location));
+		values.put(COLUMN_NAME, JsonUtil.serializeLocation(location));
 		SQLiteDatabase db = getWritableDatabase();
 		db.insert(TABLE_NAME, null, values);
 	}

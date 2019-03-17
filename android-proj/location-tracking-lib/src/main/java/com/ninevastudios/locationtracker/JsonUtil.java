@@ -28,7 +28,7 @@ public class JsonUtil {
 	private static final String HAS_VERTICAL_ACCURACY = "hasVerticalAccuracy";
 	private static final String IS_FROM_MOCK_PROVIDER = "isFromMockProvider";
 
-	public static String serialize(Location location) {
+	public static String serializeLocation(Location location) {
 		JSONObject jo = new JSONObject();
 		try {
 			jo.put(LAT, location.getLatitude());
@@ -64,5 +64,21 @@ public class JsonUtil {
 		}
 
 		return jo.toString();
+	}
+
+	private static final String PERMISSION_RESULT = "result";
+	private static final String PERMISSION_SHOULD_SHOW_REQUEST_PERMISSION_RATIONALE = "shouldShowRequestPermissionRationale";
+	private static final String PERMISSION = "permission";
+
+	static String serializePermissionResult(String permission, int grantResult, boolean shouldShowRequestPermissionRationale) {
+		JSONObject resultJson = new JSONObject();
+		try {
+			resultJson.put(PERMISSION, permission);
+			resultJson.put(PERMISSION_RESULT, grantResult);
+			resultJson.put(PERMISSION_SHOULD_SHOW_REQUEST_PERMISSION_RATIONALE, shouldShowRequestPermissionRationale);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return resultJson.toString();
 	}
 }

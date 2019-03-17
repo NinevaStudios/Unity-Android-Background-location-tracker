@@ -74,24 +74,21 @@ public class Test : MonoBehaviour
 
 	void TryRequestLocationUpdates()
 	{
-		if (LocationTracker.IsLocationEnabled)
+		LocationTracker.CheckLocationSettings(CreateLocationRequest(), locationSettingsResponse =>
 		{
+			Debug.Log("Successfully retrieved location settings " + locationSettingsResponse);
+			Debug.Log("Starting location tracking");
+
 			StartBackgroundLocationTracking();
-		}
-		else
-		{
-			LocationTracker.TryEnableLocationService(StartBackgroundLocationTracking, error =>
-			{
-				Debug.Log("Failed to enable location");
-			});
-		}
+		}, error => { Debug.Log("Failed to get location settings " + error); }, () => { Debug.Log("User cancelled"); });
 	}
 
 	void StartBackgroundLocationTracking()
 	{
 		var request = CreateLocationRequest();
 
-		var options = new BackgroundTrackingOptions(request, new Notification());
+		var notification = new Notification(); // TODO create custom notification to have a good example
+		var options = new BackgroundTrackingOptions(request, notification);
 
 		LocationTracker.StartBackgroundLocationTracking(options, location =>
 		{

@@ -27,6 +27,10 @@ public class UnityCallbacks {
 		sendMessage("OnPermissionGranted", "Permission Granted");
 	}
 
+	public static void onRequestLocationPermissionResult(String serializedResult) {
+		sendMessage("OnRequestLocationPermissionResult", serializedResult);
+	}
+
 	public static void onPermissionDenied() {
 		sendMessage("OnPermissionDenied", "Permission Denied");
 	}

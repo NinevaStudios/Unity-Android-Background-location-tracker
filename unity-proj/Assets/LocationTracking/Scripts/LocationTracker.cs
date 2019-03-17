@@ -66,11 +66,6 @@ namespace LocationTracking.Scripts
 			
 		}
 		
-		public static void TryEnableLocationService(Action onSuccess, Action<string> onFailure)
-		{
-			
-		}
-		
 		public static void StartLocationTracking([NotNull] TrackingOptions options, [NotNull] Action<Location> onLocationReceived, Action<ErrorCode> onError = null)
 		{
 			// TODO implement
