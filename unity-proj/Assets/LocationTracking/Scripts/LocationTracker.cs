@@ -31,6 +31,13 @@ namespace LocationTracking.Scripts
 		static Action<ErrorCode> _onError;
 		static BackgroundTrackingOptions _options;
 
+		static AndroidJavaClass _serviceAjo;
+
+		public static AndroidJavaClass ServiceAjo
+		{
+			get { return _serviceAjo ?? (_serviceAjo = new AndroidJavaClass(ServiceClassName)); }
+		}
+
 		public enum ErrorCode
 		{
 			LocationPermissionNotGranted = 1,
@@ -96,8 +103,7 @@ namespace LocationTracking.Scripts
 		{
 			get
 			{
-				var databaseHelper = new AndroidJavaClass(ServiceClassName);
-				return JavaExtensions.CallStaticInt(databaseHelper, "getNumberOfRows", Utils.Activity);
+				return ServiceAjo.CallStaticInt("getNumberOfRows", Utils.Activity);
 			}
 		}
 
@@ -108,8 +114,7 @@ namespace LocationTracking.Scripts
 		{
 			get
 			{
-				var databaseHelper = new AndroidJavaClass(ServiceClassName);
-				var str = JavaExtensions.CallStaticStr(databaseHelper, "getAllLocations", Utils.Activity);
+				var str = ServiceAjo.CallStaticStr("getAllLocations", Utils.Activity);
 
 				var array = str.Split(';');
 
@@ -122,13 +127,12 @@ namespace LocationTracking.Scripts
 		/// </summary>
 		public static void CleanDatabase()
 		{
-			var databaseHelper = new AndroidJavaClass(ServiceClassName);
-			databaseHelper.CallStatic("deleteAllEntries", Utils.Activity);
+			ServiceAjo.CallStatic("deleteAllEntries", Utils.Activity);
 		}
 
 		public static void StopLocationTracking()
 		{
-			JavaExtensions.CallBool(Utils.Activity, "stopService", new AndroidIntent(new AndroidJavaClass(ServiceClassName)).AJO);
+			Utils.Activity.CallBool("stopService", new AndroidIntent(ServiceAjo).AJO);
 		}
 
 		// TODO we need to not have this pubic methods here like this because user will confuse them with the API
@@ -152,7 +156,7 @@ namespace LocationTracking.Scripts
 		{
 			if (_onError != null)
 			{
-				// TODO fix with error code
+				// TODO fix with error code - return correct error codes in android
 				_onError((ErrorCode) int.Parse(message));
 			}
 		}

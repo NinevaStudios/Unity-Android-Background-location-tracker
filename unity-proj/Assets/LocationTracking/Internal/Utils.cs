@@ -1,4 +1,6 @@
-﻿#if UNITY_ANDROID
+﻿using Nineva.LocationTracker;
+
+#if UNITY_ANDROID
 namespace LocationTracking.Internal
 {
 	using System;
@@ -40,27 +42,27 @@ namespace LocationTracking.Internal
 
 		public static AndroidJavaObject ExternalCacheDirectory
 		{
-			get { return Activity.CallAJOSafe("getExternalCacheDir"); }
+			get { return Activity.CallAJO("getExternalCacheDir"); }
 		}
 
 		public static AndroidJavaObject CacheDirectory
 		{
-			get { return Activity.CallAJOSafe("getCacheDir"); }
+			get { return Activity.CallAJO("getCacheDir"); }
 		}
 
 		public static AndroidJavaObject CodeCacheDirectory
 		{
-			get { return Activity.CallAJOSafe("getCodeCacheDir"); }
+			get { return Activity.CallAJO("getCodeCacheDir"); }
 		}
 		
 		public static AndroidJavaObject DataDir
 		{
-			get { return Activity.CallAJOSafe("getDataDir"); }
+			get { return Activity.CallAJO("getDataDir"); }
 		}
 		
 		public static AndroidJavaObject ObbDir
 		{
-			get { return Activity.CallAJOSafe("getObbDir"); }
+			get { return Activity.CallAJO("getObbDir"); }
 		}
 
 		public static AndroidJavaObject ActivityDecorView

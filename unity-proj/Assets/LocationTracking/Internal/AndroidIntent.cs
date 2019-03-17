@@ -1,4 +1,6 @@
 ﻿
+using Nineva.LocationTracker;
+
 #if UNITY_ANDROID
 namespace LocationTracking.Internal
 {
