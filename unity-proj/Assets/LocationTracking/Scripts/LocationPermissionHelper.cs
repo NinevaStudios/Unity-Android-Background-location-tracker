@@ -67,7 +67,6 @@ namespace LocationTracking.Scripts
 			}
 		}
 
-
 		/// <summary>
 		/// Permission status
 		/// </summary>
@@ -107,7 +106,7 @@ namespace LocationTracking.Scripts
 			new AndroidJavaClass(RequestPermissionActivityClass).CallStatic("requestPermissions", isFineLocation);
 		}
 
-		public static void InternalOnPermissionResult()
+		public static void InternalOnPermissionResult(PermissionRequestResult result)
 		{
 			// TODO
 		}

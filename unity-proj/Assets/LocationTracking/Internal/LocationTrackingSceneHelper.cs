@@ -117,22 +117,31 @@ namespace LocationTracking.Internal
 			LocationTracker.OnLocationReceived(new Location(locationJson));
 		}
 
+		// Rewrite modular
+//		[UsedImplicitly]
+//		public void OnCheckLocationSettingsCancelled(string message)
+//		{
+//			LocationTracker.OnError(LocationTracker.ErrorCode.UserCancelled);
+//		}
+//
+//		[UsedImplicitly]
+//		public void OnCheckLocationSettingsFailed(string message)
+//		{
+//			LocationTracker.OnError(LocationTracker.ErrorCode.LocationDisabled);
+//		}
+//
+//		[UsedImplicitly]
+//		public void OnPermissionDenied(string message)
+//		{
+//			LocationTracker.OnError(LocationTracker.ErrorCode.LocationPermissionNotGranted);
+//		}		
+		
 		[UsedImplicitly]
-		public void OnCheckLocationSettingsCancelled(string message)
+		public void OnRequestLocationPermissionResult(string locationPermissionResult)
 		{
-			LocationTracker.OnError(LocationTracker.ErrorCode.UserCancelled);
-		}
-
-		[UsedImplicitly]
-		public void OnCheckLocationSettingsFailed(string message)
-		{
-			LocationTracker.OnError(LocationTracker.ErrorCode.LocationDisabled);
-		}
-
-		[UsedImplicitly]
-		public void OnPermissionDenied(string message)
-		{
-			LocationTracker.OnError(LocationTracker.ErrorCode.LocationPermissionNotGranted);
+			LocationPermissionHelper.PermissionRequestResult result = null; // TODO parse
+			
+			LocationPermissionHelper.InternalOnPermissionResult(result);
 		}
 	}
 }

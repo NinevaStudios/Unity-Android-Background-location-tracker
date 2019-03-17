@@ -28,7 +28,7 @@ namespace LocationTracking.Scripts
 		const string LocationHelperActivityClass = "com.ninevastudios.locationtracker.LocationHelperActivity";
 
 		static Action<Location> _onLocationReceived;
-		static Action<ErrorCode> _onError;
+		static Action<string> _onError;
 		static BackgroundTrackingOptions _options;
 
 		static AndroidJavaClass _serviceAjo;
@@ -36,13 +36,6 @@ namespace LocationTracking.Scripts
 		public static AndroidJavaClass ServiceAjo
 		{
 			get { return _serviceAjo ?? (_serviceAjo = new AndroidJavaClass(ServiceClassName)); }
-		}
-
-		public enum ErrorCode
-		{
-			LocationPermissionNotGranted = 1,
-			LocationDisabled = 2,
-			UserCancelled = 3,
 		}
 
 		/// <summary>
@@ -66,14 +59,14 @@ namespace LocationTracking.Scripts
 			
 		}
 		
-		public static void StartLocationTracking([NotNull] TrackingOptions options, [NotNull] Action<Location> onLocationReceived, Action<ErrorCode> onError = null)
+		public static void StartLocationTracking([NotNull] TrackingOptions options, [NotNull] Action<Location> onLocationReceived, Action<string> onError = null)
 		{
 			// TODO implement
 		}
 
 		// TODO make it work correctly with error codes (ErrorCode)
 		// TODO document, explain how foreground and background works
-		public static void StartBackgroundLocationTracking([NotNull] BackgroundTrackingOptions options, [NotNull] Action<Location> onLocationReceived, Action<ErrorCode> onError = null)
+		public static void StartBackgroundLocationTracking([NotNull] BackgroundTrackingOptions options, [NotNull] Action<Location> onLocationReceived, Action<string> onError = null)
 		{
 			if (options == null)
 			{
@@ -170,11 +163,10 @@ namespace LocationTracking.Scripts
 			}
 		}
 
-		public static void OnError(ErrorCode errorCode)
+		public static void OnError(string errorCode)
 		{
 			if (_onError != null)
 			{
-				// TODO fix with error code - return correct error codes in android
 				_onError(errorCode);
 			}
 		}
