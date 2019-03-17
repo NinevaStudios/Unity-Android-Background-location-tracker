@@ -12,7 +12,6 @@ public class NotificationData implements Parcelable {
 	public String stopServiceActionTitle;
 
 	public NotificationData() {
-
 	}
 
 	protected NotificationData(Parcel in) {

@@ -161,8 +161,6 @@ public class NinevaLocationService extends Service {
 			fusedLocationClient.removeLocationUpdates(locationCallback);
 			Log.d(TAG, "Location Update Callback Removed");
 		}
-
-		UnityCallbacks.onServiceStopped("The service was successfully stopped!");
 	}
 
 	private void createForegroundNotification() {

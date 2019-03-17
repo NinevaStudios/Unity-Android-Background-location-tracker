@@ -3,6 +3,7 @@ using LocationTracking.Scripts;
 using UnityEngine;
 using UnityEngine.UI;
 
+// TODO rename this class to LocationTrackingExample.cs
 public class Test : MonoBehaviour
 {
 	[SerializeField] Text locationText, numberText;
@@ -32,7 +33,7 @@ public class Test : MonoBehaviour
 	[UsedImplicitly]
 	public void OnStopTracking()
 	{
-		LocationTracker.StopLocationTracking(message => { locationText.text = message; });
+		LocationTracker.StopLocationTracking();
 		_ticks = 0;
 	}
 

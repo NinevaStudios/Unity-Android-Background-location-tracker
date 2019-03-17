@@ -22,10 +22,6 @@ public class UnityCallbacks {
 		sendMessage("OnLocationReceived", locationJson);
 	}
 
-	public static void onServiceStopped(String message) {
-		sendMessage("OnServiceStopped", message);
-	}
-
 	public static void onPermissionGranted() {
 		sendMessage("OnPermissionGranted", "Permission Granted");
 	}

@@ -28,7 +28,6 @@ namespace LocationTracking.Scripts
 		const string LocationHelperActivityClass = "com.ninevastudios.locationtracker.LocationHelperActivity";
 
 		static Action<Location> _onLocationReceived;
-		static Action<string> _onServiceStopped;
 		static Action<ErrorCode> _onError;
 		static BackgroundTrackingOptions _options;
 
@@ -65,9 +64,7 @@ namespace LocationTracking.Scripts
 			_onLocationReceived = onLocationReceived;
 			_onError = onError;
 
-			var intent = GetIntent(options);
-
-			Utils.StartActivity(intent.AJO);
+			Utils.StartActivity(GetIntent(options).AJO);
 		}
 
 		static AndroidIntent GetIntent(BackgroundTrackingOptions options)
@@ -129,10 +126,8 @@ namespace LocationTracking.Scripts
 			databaseHelper.CallStatic("deleteAllEntries", Utils.Activity);
 		}
 
-		public static void StopLocationTracking(Action<string> onServiceStopped = null)
+		public static void StopLocationTracking()
 		{
-			_onServiceStopped = onServiceStopped;
-
 			JavaExtensions.CallBool(Utils.Activity, "stopService", new AndroidIntent(new AndroidJavaClass(ServiceClassName)).AJO);
 		}
 
@@ -142,14 +137,6 @@ namespace LocationTracking.Scripts
 			if (_onLocationReceived != null)
 			{
 				_onLocationReceived(location);
-			}
-		}
-
-		public static void OnServiceStopped(string message)
-		{
-			if (_onServiceStopped != null)
-			{
-				_onServiceStopped(message);
 			}
 		}
 
