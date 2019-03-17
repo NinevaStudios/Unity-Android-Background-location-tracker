@@ -9,6 +9,7 @@ public class Test : MonoBehaviour
 
 	int _ticks;
 
+	// TODO separate examples for background and foreground tracking
 	[UsedImplicitly]
 	public void OnStartTracking()
 	{
@@ -18,10 +19,9 @@ public class Test : MonoBehaviour
 		var priority = LocationRequest.TrackingPriority.BalancedPowerAccuracy;
 		var request = new LocationRequest(interval, fastestInterval, priority, maxWaitTime);
 
-		var options = new TrackingOptions(request);
-		options.SetNotification(new Notification());
+		var options = new BackgroundTrackingOptions(request, new Notification());
 
-		LocationTracker.StartLocationTracking(options, location =>
+		LocationTracker.StartLocationTrackingBackground(options, location =>
 		{
 			locationText.horizontalOverflow = HorizontalWrapMode.Wrap;
 			locationText.text = ++_ticks + ". " + location.ToString() + "\n";

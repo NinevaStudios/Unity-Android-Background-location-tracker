@@ -30,7 +30,7 @@ namespace LocationTracking.Scripts
 		static Action<Location> _onLocationReceived;
 		static Action<string> _onServiceStopped;
 		static Action<ErrorCode> _onError;
-		static TrackingOptions _options;
+		static BackgroundTrackingOptions _options;
 
 		public enum ErrorCode
 		{
@@ -38,9 +38,14 @@ namespace LocationTracking.Scripts
 			LocationDisabled = 2
 		}
 
+		public static void StartLocationTracking([NotNull] TrackingOptions options, [NotNull] Action<Location> onLocationReceived, Action<ErrorCode> onError = null)
+		{
+			// TODO implement
+		}
+
 		// TODO make it work correctly with error codes (ErrorCode)
 		// TODO document, explain how foreground and background works
-		public static void StartLocationTracking([NotNull] TrackingOptions options, [NotNull] Action<Location> onLocationReceived, Action<ErrorCode> onError = null)
+		public static void StartLocationTrackingBackground([NotNull] BackgroundTrackingOptions options, [NotNull] Action<Location> onLocationReceived, Action<ErrorCode> onError = null)
 		{
 			if (options == null)
 			{
@@ -61,7 +66,7 @@ namespace LocationTracking.Scripts
 			Utils.StartActivity(intent.AJO);
 		}
 
-		static AndroidIntent GetIntent(TrackingOptions options)
+		static AndroidIntent GetIntent(BackgroundTrackingOptions options)
 		{
 			var intent = new AndroidIntent(Utils.ClassForName(LocationHelperActivityClass));
 			intent.SetFlags(AndroidIntent.Flags.ActivityNewTask | AndroidIntent.Flags.ActivityClearTask);
@@ -148,7 +153,7 @@ namespace LocationTracking.Scripts
 		{
 			if (_options != null && _onLocationReceived != null)
 			{
-				StartLocationTracking(_options, _onLocationReceived, _onError);
+				StartLocationTrackingBackground(_options, _onLocationReceived, _onError);
 			}
 		}
 
