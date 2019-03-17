@@ -14,20 +14,7 @@ public class Test : MonoBehaviour
 	[UsedImplicitly]
 	public void OnStartTracking()
 	{
-		var interval = 10 * 1000L;
-		var fastestInterval = 60 * 1000L;
-		var maxWaitTime = 5 * 1000L;
-		var priority = LocationRequest.TrackingPriority.BalancedPowerAccuracy;
-		var request = new LocationRequest(interval, fastestInterval, priority, maxWaitTime);
-
-		var options = new BackgroundTrackingOptions(request, new Notification());
-
-		LocationTracker.StartBackgroundLocationTracking(options, location =>
-		{
-			locationText.horizontalOverflow = HorizontalWrapMode.Wrap;
-			locationText.text = ++_ticks + ". " + location.ToString() + "\n";
-			numberText.text = LocationTracker.SavedLocationsCount.ToString();
-		}, errorMessage => { Debug.Log(errorMessage); });
+		StartBackgroundLocationTracking();
 	}
 
 	[UsedImplicitly]
@@ -52,5 +39,75 @@ public class Test : MonoBehaviour
 		{
 			locationText.text += location + "\n";
 		}
+	}
+
+	public void OnRequestBackgroundLocationUpdates()
+	{
+		if (LocationPermissionHelper.IsLocationPermissionGranted)
+		{
+			TryRequestLocationUpdates();
+		}
+		else
+		{
+			LocationPermissionHelper.RequestLocationPermission(result =>
+			{
+				if (result.Status == LocationPermissionHelper.PermissionStatus.Granted)
+				{
+					// Permission was granted, we can continue
+					TryRequestLocationUpdates();
+				}
+				else
+				{
+					// User denied permission, now we need to find out if he clicked "Do not show again" checkbox
+					if (result.ShouldShowRequestPermissionRationale)
+					{
+						Debug.Log("User just denied permission, we can show explanation here and request permissions again or send user to settings to do so");
+					}
+					else
+					{
+						Debug.Log("User checked Do not show again checkbox or permission can't be granted. We should continue with this permission denied");
+					}
+				}
+			});
+		}
+	}
+
+	void TryRequestLocationUpdates()
+	{
+		if (LocationTracker.IsLocationEnabled)
+		{
+			StartBackgroundLocationTracking();
+		}
+		else
+		{
+			LocationTracker.TryEnableLocationService(StartBackgroundLocationTracking, error =>
+			{
+				Debug.Log("Failed to enable location");
+			});
+		}
+	}
+
+	void StartBackgroundLocationTracking()
+	{
+		var request = CreateLocationRequest();
+
+		var options = new BackgroundTrackingOptions(request, new Notification());
+
+		LocationTracker.StartBackgroundLocationTracking(options, location =>
+		{
+			locationText.horizontalOverflow = HorizontalWrapMode.Wrap;
+			locationText.text = ++_ticks + ". " + location.ToString() + "\n";
+			numberText.text = LocationTracker.SavedLocationsCount.ToString();
+		}, errorMessage => { Debug.Log(errorMessage); });
+	}
+
+	static LocationRequest CreateLocationRequest()
+	{
+		var interval = 10 * 1000L;
+		var fastestInterval = 60 * 1000L;
+		var maxWaitTime = 5 * 1000L;
+		var priority = LocationRequest.TrackingPriority.BalancedPowerAccuracy;
+		var request = new LocationRequest(interval, fastestInterval, priority, maxWaitTime);
+		return request;
 	}
 }

@@ -5,17 +5,18 @@ import com.unity3d.player.UnityPlayer;
 public class UnityCallbacks {
 
 	private static final String UNITY_SCENE_HELPER_GAME_OBJECT_NAME = "LocationTrackingSceneHelper";
+	private static final String EMPTY = "";
 
 	public static void onCheckLocationSettingsSuccess() {
-		sendMessage("OnCheckLocationSettingsSuccess", "Location Settings Check Success");
+		sendMessage("OnCheckLocationSettingsSuccess", EMPTY);
 	}
 
 	public static void onCheckLocationSettingsCancelled() {
-		sendMessage("OnCheckLocationSettingsCancelled", "Location Settings Check Cancelled");
+		sendMessage("OnCheckLocationSettingsCancelled", EMPTY);
 	}
 
-	public static void onCheckLocationSettingsFailed(String message) {
-		sendMessage("OnCheckLocationSettingsFailed", message);
+	public static void onCheckLocationSettingsFailed() {
+		sendMessage("OnCheckLocationSettingsFailed", EMPTY);
 	}
 
 	public static void onLocationReceived(String locationJson) {

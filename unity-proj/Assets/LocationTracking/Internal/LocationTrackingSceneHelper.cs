@@ -115,24 +115,19 @@ namespace LocationTracking.Internal
 			LocationTracker.OnLocationReceived(new Location(locationJson));
 		}
 
-		public void OnPermissionGranted(string message)
-		{
-			LocationTracker.OnPermissionGranted();
-		}
-
 		public void OnCheckLocationSettingsCancelled(string message)
 		{
-			LocationTracker.OnError(message);
+			LocationTracker.OnError(LocationTracker.ErrorCode.UserCancelled);
 		}
 
 		public void OnCheckLocationSettingsFailed(string message)
 		{
-			LocationTracker.OnError(message);
+			LocationTracker.OnError(LocationTracker.ErrorCode.LocationDisabled);
 		}
 
 		public void OnPermissionDenied(string message)
 		{
-			LocationTracker.OnError(message);
+			LocationTracker.OnError(LocationTracker.ErrorCode.LocationPermissionNotGranted);
 		}
 	}
 }

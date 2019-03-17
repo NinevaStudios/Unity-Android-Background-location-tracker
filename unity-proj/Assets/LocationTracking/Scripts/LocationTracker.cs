@@ -41,12 +41,35 @@ namespace LocationTracking.Scripts
 		public enum ErrorCode
 		{
 			LocationPermissionNotGranted = 1,
-			LocationDisabled = 2
+			LocationDisabled = 2,
+			UserCancelled = 3,
+		}
+
+		/// <summary>
+		/// Returns whether the location service is enabled on the user device
+		/// </summary>
+		public static bool IsLocationEnabled
+		{
+			get
+			{
+				// TODO implement
+				return false;
+			}
 		}
 
 		// TODO implement last known location property from android API
 		
 		// TODO implement all the properties android goodies has like is location enabled etc. maybe we will rework this to be modular
+
+		public static void CheckLocationSettings(LocationRequest locationRequest, Action<LocationSettingsResponse> onSuccess, Action<string> onFailure, Action onCancel)
+		{
+			
+		}
+		
+		public static void TryEnableLocationService(Action onSuccess, Action<string> onFailure)
+		{
+			
+		}
 		
 		public static void StartLocationTracking([NotNull] TrackingOptions options, [NotNull] Action<Location> onLocationReceived, Action<ErrorCode> onError = null)
 		{
@@ -152,12 +175,12 @@ namespace LocationTracking.Scripts
 			}
 		}
 
-		public static void OnError(string message)
+		public static void OnError(ErrorCode errorCode)
 		{
 			if (_onError != null)
 			{
 				// TODO fix with error code - return correct error codes in android
-				_onError((ErrorCode) int.Parse(message));
+				_onError(errorCode);
 			}
 		}
 	}

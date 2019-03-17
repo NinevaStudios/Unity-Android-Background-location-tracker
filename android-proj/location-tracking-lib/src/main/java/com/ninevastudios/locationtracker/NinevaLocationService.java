@@ -13,6 +13,7 @@ import android.location.Location;
 import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.Parcelable;
 import android.support.annotation.Keep;
 import android.support.annotation.NonNull;
 import android.support.v4.app.NotificationCompat;
@@ -42,7 +43,6 @@ public class NinevaLocationService extends Service {
 	private FusedLocationProviderClient fusedLocationClient;
 	private LocationCallback locationCallback;
 	private LocationRequest locationRequest;
-	private NotificationData notificationData;
 	private Notification notification;
 
 	@Override
@@ -65,8 +65,8 @@ public class NinevaLocationService extends Service {
 			stopService(stopIntent);
 		} else {
 			locationRequest = intent.getParcelableExtra(LocationHelperActivity.EXTRA_LOCATION_REQUEST);
-			notificationData = intent.getParcelableExtra(LocationHelperActivity.EXTRA_NOTIFICATION_DATA);
-			createForegroundNotification();
+			NotificationData notificationData = intent.getParcelableExtra(LocationHelperActivity.EXTRA_NOTIFICATION_DATA);
+			createForegroundNotification(notificationData);
 			init();
 		}
 
@@ -109,7 +109,7 @@ public class NinevaLocationService extends Service {
 				.addOnFailureListener(new OnFailureListener() {
 					@Override
 					public void onFailure(@NonNull Exception e) {
-						UnityCallbacks.onCheckLocationSettingsFailed(e.toString());
+						UnityCallbacks.onCheckLocationSettingsFailed();
 					}
 				})
 				.addOnCanceledListener(new OnCanceledListener() {
@@ -120,6 +120,7 @@ public class NinevaLocationService extends Service {
 				});
 	}
 
+	// TODO move these methods to DbHelper!
 	@Keep
 	public static int getNumberOfRows(Context context) {
 		return DbHelper.getInstance(context.getApplicationContext()).numberOfRows();
@@ -163,7 +164,7 @@ public class NinevaLocationService extends Service {
 		}
 	}
 
-	private void createForegroundNotification() {
+	private void createForegroundNotification(NotificationData notificationData) {
 		String CHANNEL_ID = "channel_location_id";
 		String CHANNEL_NAME = "channel_location_name";
 

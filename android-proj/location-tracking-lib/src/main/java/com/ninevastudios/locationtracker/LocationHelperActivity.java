@@ -56,7 +56,6 @@ public class LocationHelperActivity extends Activity {
 					@Override
 					public void onSuccess(LocationSettingsResponse locationSettingsResponse) {
 						requestBackgroundLocationUpdates();
-						UnityCallbacks.onCheckLocationSettingsSuccess();
 						finish();
 					}
 				})
@@ -68,10 +67,10 @@ public class LocationHelperActivity extends Activity {
 								ResolvableApiException resolvable = (ResolvableApiException) e;
 								resolvable.startResolutionForResult(LocationHelperActivity.this, REQUEST_CHECK_SETTINGS);
 							} catch (IntentSender.SendIntentException sendEx) {
-								UnityCallbacks.onCheckLocationSettingsFailed(sendEx.toString());
+								UnityCallbacks.onCheckLocationSettingsFailed();
 							}
 						} else {
-							UnityCallbacks.onCheckLocationSettingsFailed(e.toString());
+							UnityCallbacks.onCheckLocationSettingsFailed();
 							finish();
 						}
 					}
@@ -101,10 +100,8 @@ public class LocationHelperActivity extends Activity {
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		super.onActivityResult(requestCode, resultCode, data);
-		Log.d(TAG, "onActivityResult -> start");
 		if (resultCode == RESULT_OK) {
 			requestBackgroundLocationUpdates();
-			UnityCallbacks.onPermissionGranted();
 			finish();
 			Log.d(TAG, "onActivityResult -> OK");
 		} else {
@@ -123,8 +120,6 @@ public class LocationHelperActivity extends Activity {
 		locationRequest.setFastestInterval(fastestInterval);
 		locationRequest.setPriority(priority);
 		locationRequest.setMaxWaitTime(maxWaitTime);
-
-		Log.d("LocationRequest: ", locationRequest.toString());
 
 		LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
 		builder.addLocationRequest(locationRequest);
