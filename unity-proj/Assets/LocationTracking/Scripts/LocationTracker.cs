@@ -38,6 +38,10 @@ namespace LocationTracking.Scripts
 			LocationDisabled = 2
 		}
 
+		// TODO implement last known location property from android API
+		
+		// TODO implement all the properties android goodies has like is location enabled etc. maybe we will rework this to be modular
+		
 		public static void StartLocationTracking([NotNull] TrackingOptions options, [NotNull] Action<Location> onLocationReceived, Action<ErrorCode> onError = null)
 		{
 			// TODO implement
